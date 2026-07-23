@@ -1,0 +1,28 @@
+# Binaries
+/backend/cmd/server/server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+Thumbs.db
+Ehthumbs.db
+Desktop.ini
+
+# Env
+.env
+backend/.env
+
+# Node / Frontend
+node_modules/
