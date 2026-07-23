@@ -56,7 +56,7 @@
           <div>
             <div class="flex items-baseline space-x-2">
               <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                {{ stats.avgScore ? stats.avgScore.toFixed(1) : '4.8' }}
+                {{ stats.totalResponses > 0 ? stats.avgScore.toFixed(1) : '0.0' }}
               </span>
               <span class="text-base font-bold text-slate-500">/ 5.0</span>
             </div>
