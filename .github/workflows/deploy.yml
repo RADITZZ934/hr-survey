@@ -48,10 +48,12 @@ jobs:
       # Package the builds
       - name: Package Artifacts
         run: |
-          mkdir -p dist-release
-          cp backend/hrd-backend dist-release/
-          cp -r frontend/dist dist-release/frontend-dist
+          mkdir -p dist-release/backend
+          mkdir -p dist-release/frontend
+          cp backend/hrd-backend dist-release/backend/
+          cp -r frontend/dist/* dist-release/frontend/
           tar -czf release.tar.gz -C dist-release .
+
 
       # Upload to GitHub Actions Artifacts
       - name: Upload Artifact
