@@ -27,7 +27,7 @@ func getEnv(key, defaultValue string) string {
 
 func LoadConfig() {
 	AppConfig = Config{
-		Port: getEnv("PORT", "1302"),
+		Port: getEnv("PORT", "1402"),
 
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
