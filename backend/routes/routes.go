@@ -2,12 +2,21 @@ package routes
 
 import (
 	"employee-satisfaction-system/backend/controllers"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterRoutes(r *gin.Engine) {
-	api := r.Group("/api")
+	api := r.Group("/")
 	{
+		api.GET("", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"status":  "healthy",
+				"message": "Employee Satisfaction System API is running",
+			})
+		})
+
 		// Auth & Admin
 		api.POST("/auth/login", controllers.Login)
 		api.GET("/admin/backup", controllers.BackupDatabase)
