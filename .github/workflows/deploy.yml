@@ -1,0 +1,81 @@
+name: Build and Deploy HR Survey
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup Node.js cache and build frontend
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend
+
+      # Setup Go cache and build backend
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+          cache: true
+          cache-dependency-path: 'backend/go.sum'
+
+      - name: Build Backend
+        run: go build -o hrd-backend ./cmd/server
+        working-directory: backend
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: amd64
+
+      # Package the builds
+      - name: Package Artifacts
+        run: |
+          mkdir -p dist-release
+          cp backend/hrd-backend dist-release/
+          cp -r frontend/dist dist-release/frontend-dist
+          tar -czf release.tar.gz -C dist-release .
+
+      # Upload to GitHub Actions Artifacts
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hrd-build-release
+          path: release.tar.gz
+          retention-days: 7
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Checkout repository (to get deploy.sh)
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hrd-build-release
+          path: ~/hrd/tmp
+
+      - name: Execute Deploy Script
+        run: |
+          chmod +x ~/hrd/script/deploy.sh
+          ~/hrd/script/deploy.sh ~/hrd/tmp/release.tar.gz

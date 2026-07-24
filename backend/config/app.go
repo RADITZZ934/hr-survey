@@ -19,15 +19,15 @@ var AppConfig Config
 
 func LoadConfig() {
 	AppConfig = Config{
-		Port: os.Getenv("PORT"),
+		Port: os.Getenv("1302"),
 
-		DBHost:     os.Getenv("DB_HOST"),
-		DBPort:     os.Getenv("DB_PORT"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBSSLMode:  os.Getenv("DB_SSLMODE"),
+		DBHost:     os.Getenv("localhost"),
+		DBPort:     os.Getenv("5432"),
+		DBUser:     os.Getenv("postgres"),
+		DBPassword: os.Getenv("postgres"),
+		DBName:     os.Getenv("hr_survey"),
+		DBSSLMode:  os.Getenv("disable"),
 
-		JWTSecret: os.Getenv("JWT_SECRET"),
+		JWTSecret: os.Getenv("supersecret123"),
 	}
 }
