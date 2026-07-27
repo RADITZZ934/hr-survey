@@ -38,5 +38,5 @@ func LoadConfig() {
 
 		JWTSecret: getEnv("JWT_SECRET", "supersecret123"),
 	}
-}
+}	
 

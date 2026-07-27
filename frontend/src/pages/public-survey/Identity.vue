@@ -38,7 +38,7 @@
 
       <!-- Name Input (Hidden until Identity selected) -->
       <div v-if="selectedMode === 'identity'" class="space-y-1.5 animate-fade-in">
-        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap / NIK</label>
+        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
         <input 
           v-model="employeeId"
           type="text" 
