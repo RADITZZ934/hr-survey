@@ -29,6 +29,7 @@ func GetSurveys(c *gin.Context) {
 type QuestionInput struct {
 	Text       string `json:"text" binding:"required"`
 	Type       string `json:"type" binding:"required"`
+	Category   string `json:"category"`
 	IsRequired bool   `json:"is_required"`
 }
 
@@ -91,15 +92,34 @@ func CreateSurvey(c *gin.Context) {
 			questionType = "text"
 		}
 
-		categoryID := uint(1) // Category 1 for Rating Bintang
-		if questionType == "text" {
-			categoryID = 2 // Category 2 for Essay
+		// Determine or create category
+		categoryName := qInput.Category
+		if categoryName == "" {
+			if questionType == "text" {
+				categoryName = "Essay"
+			} else {
+				categoryName = "Rating Bintang"
+			}
+		}
+
+		var category models.SurveyCategory
+		if err := tx.Where("LOWER(name) = LOWER(?)", categoryName).First(&category).Error; err != nil {
+			// Category not found, create new
+			category = models.SurveyCategory{
+				Name:        categoryName,
+				Description: "Created automatically from survey import.",
+			}
+			if err := tx.Create(&category).Error; err != nil {
+				tx.Rollback()
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create category: " + categoryName})
+				return
+			}
 		}
 
 		question := models.Question{
 			Text:       qInput.Text,
 			Type:       questionType,
-			CategoryID: categoryID,
+			CategoryID: category.ID,
 			IsRequired: qInput.IsRequired,
 		}
 

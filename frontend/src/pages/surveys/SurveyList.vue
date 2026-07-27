@@ -130,6 +130,7 @@
                     <th class="py-3 px-4 w-12 text-center bg-slate-50">No</th>
                     <th class="py-3 px-4 bg-slate-50">Question Text</th>
                     <th class="py-3 px-4 w-36 bg-slate-50">Type</th>
+                    <th class="py-3 px-4 w-44 bg-slate-50">Category</th>
                     <th class="py-3 px-4 w-28 text-center bg-slate-50">Required</th>
                     <th class="py-3 px-4 w-12 bg-slate-50"></th>
                   </tr>
@@ -156,6 +157,15 @@
                         <option value="essay">Essay</option>
                       </select>
                     </td>
+                    <td class="py-3.5 px-4">
+                      <input 
+                        v-model="q.category"
+                        type="text"
+                        required
+                        placeholder="Category (e.g. Work-Life Balance)"
+                        class="w-full bg-transparent border-b border-transparent focus:border-blue-500 focus:outline-none py-1 text-slate-700 text-sm font-semibold transition-all"
+                      />
+                    </td>
                     <td class="py-3.5 px-4 text-center">
                       <button 
                         type="button"
@@ -178,7 +188,7 @@
                     </td>
                   </tr>
                   <tr v-if="wizardForm.questions.length === 0">
-                    <td colspan="6" class="py-8 text-center text-slate-400 text-xs italic bg-slate-50/20">
+                    <td colspan="7" class="py-8 text-center text-slate-400 text-xs italic bg-slate-50/20">
                       No questions added yet. Download the template or click "+ Add Question" to begin.
                     </td>
                   </tr>
@@ -568,12 +578,15 @@ const prevStep = () => {
 // Dynamic Template Download
 const downloadExcelTemplate = () => {
   const wsData = [
+    ["Work-Life Balance"], // Category Header Row
     ["Pertanyaan", "Tipe", "", "ATURAN PENGISIAN TEMPLATE:"],
-    ["Seberapa puas Anda dengan keseimbangan waktu kerja (Work-Life Balance) di perusahaan?", 1, "", "1. Kolom 'Pertanyaan' diisi teks pertanyaan kuesioner."],
-    ["Berikan saran atau kritik Anda untuk meningkatkan kenyamanan bekerja di kantor.", 2, "", "2. Kolom 'Tipe' diisi angka: '1' (Rating Bintang) atau '2' (Essay)."],
-    ["Bagaimana Anda menilai dukungan moral dan feedback dari atasan langsung Anda?", 1, "", "3. Tipe '1' (Rating Bintang) otomatis wajib diisi (Required = YES) & masuk Kategori 1."],
-    ["", "", "", "4. Tipe '2' (Essay) otomatis tidak wajib (Required = NO) & masuk Kategori 2."],
-    ["", "", "", "5. Harap tidak mengubah nama kolom header di baris pertama."]
+    ["Seberapa puas Anda dengan keseimbangan waktu kerja (Work-Life Balance) di perusahaan?", 1, "", "1. Tulis nama kategori pada baris tersendiri (tanpa mengisi kolom Tipe) sebagai pembatas kategori."],
+    ["Berikan saran atau kritik Anda untuk meningkatkan kenyamanan bekerja di kantor.", 2, "", "2. Di bawah baris kategori, buat header tabel dengan kolom 'Pertanyaan' dan 'Tipe'."],
+    ["", "", "", "3. Kolom 'Pertanyaan' diisi dengan teks pertanyaan kuesioner."],
+    ["Manager Support"], // Category Header Row
+    ["Pertanyaan", "Tipe", "", "4. Kolom 'Tipe' diisi angka: '1' (Rating Bintang) atau '2' (Essay)."],
+    ["Bagaimana Anda menilai dukungan moral dan feedback dari atasan langsung Anda?", 1, "", "5. Pertanyaan di bawah judul kategori otomatis dikelompokkan ke dalam kategori tersebut."],
+    ["", "", "", "6. Harap tidak mengubah nama kolom header 'Pertanyaan' dan 'Tipe'."]
   ];
   
   const wb = XLSX.utils.book_new();
@@ -582,7 +595,7 @@ const downloadExcelTemplate = () => {
   // Set column widths
   ws['!cols'] = [
     { wch: 65 }, // Pertanyaan
-    { wch: 20 }, // Tipe
+    { wch: 10 }, // Tipe
     { wch: 5 },  // Spasi kosong
     { wch: 55 }  // Rules/Petunjuk
   ];
@@ -603,50 +616,57 @@ const handleExcelUpload = (event) => {
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     
-    // Parse to JSON array
-    const rawRows = XLSX.utils.sheet_to_json(worksheet);
+    // Parse to 2D array of rows
+    const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
     
-    // Process questions
-    const parsedQuestions = rawRows.map(row => {
-      // Find text value robustly
-      let qText = "";
-      for (const key in row) {
-        if (key.toLowerCase().startsWith("pertanyaan") || key.toLowerCase().startsWith("question")) {
-          qText = String(row[key] || "");
-          break;
+    let currentCategory = "";
+    const parsedQuestions = [];
+
+    for (let i = 0; i < rawRows.length; i++) {
+      const row = rawRows[i];
+      if (!row || row.length === 0) continue;
+
+      const colA = String(row[0] || "").trim();
+      const colB = String(row[1] || "").trim();
+
+      // Check if it's empty row
+      if (!colA && !colB) continue;
+
+      // Check if it's a sub-header row like ["Pertanyaan", "Tipe"]
+      const isHeaderRow = colA.toLowerCase().startsWith("pertanyaan") || colA.toLowerCase().startsWith("question") || colB.toLowerCase().startsWith("tipe") || colB.toLowerCase().startsWith("type");
+      if (isHeaderRow) {
+        continue;
+      }
+
+      // Check if this row is a Category Header
+      if (colA && !colB) {
+        // If it's a line from instruction block (usually rules are placed in column D/index 3)
+        const colD = String(row[3] || "").trim();
+        if (colA.includes("ATURAN") || colA.includes("RULES") || colD) {
+          continue;
         }
-      }
-      if (!qText) {
-        qText = row["Pertanyaan"] || row["pertanyaan"] || row["Question"] || "";
+        
+        currentCategory = colA;
+        continue;
       }
 
-      // Find type value robustly by checking keys that start with "tipe" or "type"
-      let typeVal = "";
-      for (const key in row) {
-        if (key.toLowerCase().startsWith("tipe") || key.toLowerCase().startsWith("type")) {
-          typeVal = row[key];
-          break;
+      // If it has both question text and type, it's a question row
+      if (colA && colB) {
+        let type = "star";
+        if (colB === "2" || colB.toLowerCase().includes("essay") || colB.toLowerCase().includes("text") || colB.toLowerCase().includes("tulis")) {
+          type = "essay";
         }
+
+        const is_required = (type === "star");
+
+        parsedQuestions.push({
+          text: colA,
+          type,
+          category: currentCategory || (type === "star" ? "Rating Bintang" : "Essay"),
+          is_required
+        });
       }
-      const qTypeRaw = String(typeVal || "").toLowerCase().trim();
-
-      // Determine type: star (1) / essay (2)
-      let type = "star";
-      if (qTypeRaw === "2" || qTypeRaw.includes("essay") || qTypeRaw.includes("text") || qTypeRaw.includes("tulis")) {
-        type = "essay";
-      } else if (qTypeRaw === "1" || qTypeRaw.includes("bintang") || qTypeRaw.includes("star")) {
-        type = "star";
-      }
-
-      // Default isRequired: YES for star, NO for essay
-      const is_required = (type === "star");
-
-      return {
-        text: qText,
-        type,
-        is_required
-      };
-    }).filter(q => q.text.trim() !== ""); // Filter empty rows
+    }
 
     wizardForm.value.questions = [...wizardForm.value.questions, ...parsedQuestions];
   };
@@ -660,6 +680,7 @@ const addQuestionRow = () => {
   wizardForm.value.questions.push({
     text: '',
     type: 'star',
+    category: 'Rating Bintang',
     is_required: true
   });
 };
