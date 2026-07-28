@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"employee-satisfaction-system/backend/config"
@@ -166,4 +167,63 @@ func GetSurveyQuestions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, questions)
+}
+
+func DeleteSurvey(c *gin.Context) {
+	surveyIDStr := c.Param("id")
+	surveyID, err := strconv.ParseUint(surveyIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid survey ID"})
+		return
+	}
+
+	tx := config.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// 1. Delete associated SurveyQuestions
+	if err := tx.Where("survey_id = ?", surveyID).Delete(&models.SurveyQuestion{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete survey questions association"})
+		return
+	}
+
+	// 2. Delete ResponseAnswers for responses of this survey
+	var responses []models.Response
+	if err := tx.Where("survey_id = ?", surveyID).Find(&responses).Error; err == nil {
+		for _, resp := range responses {
+			tx.Where("response_id = ?", resp.ID).Delete(&models.ResponseAnswer{})
+		}
+	}
+
+	// 3. Delete Responses
+	if err := tx.Where("survey_id = ?", surveyID).Delete(&models.Response{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete survey responses"})
+		return
+	}
+
+	// 4. Delete ActionPlans
+	if err := tx.Where("survey_id = ?", surveyID).Delete(&models.ActionPlan{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete action plans"})
+		return
+	}
+
+	// 5. Delete Survey
+	if err := tx.Delete(&models.Survey{}, surveyID).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete survey"})
+		return
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Survey deleted successfully"})
 }

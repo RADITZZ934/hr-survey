@@ -29,6 +29,7 @@ func RegisterRoutes(r *gin.Engine) {
 		api.GET("/surveys", controllers.GetSurveys)
 		api.POST("/surveys", controllers.CreateSurvey)
 		api.GET("/surveys/:id/questions", controllers.GetSurveyQuestions)
+		api.DELETE("/surveys/:id", controllers.DeleteSurvey)
 
 		// Categories
 		api.GET("/categories", controllers.GetCategories)

@@ -430,7 +430,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getSurveys, createSurvey } from '../../services/survey.service';
+import { getSurveys, createSurvey, deleteSurvey as deleteSurveyApi } from '../../services/survey.service';
 import { useSearchStore } from '../../stores/search';
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 import * as XLSX from 'xlsx';
@@ -714,9 +714,15 @@ const toggleStatus = (survey) => {
   survey.status = survey.status === 'active' ? 'closed' : 'active';
 };
 
-const deleteSurvey = (id) => {
+const deleteSurvey = async (id) => {
   if (confirm('Are you sure you want to delete this survey?')) {
-    surveys.value = surveys.value.filter(s => s.id !== id);
+    try {
+      await deleteSurveyApi(id);
+      surveys.value = surveys.value.filter(s => s.id !== id);
+    } catch (error) {
+      console.error('Failed to delete survey:', error);
+      alert('Gagal menghapus survey dari database.');
+    }
   }
 };
 

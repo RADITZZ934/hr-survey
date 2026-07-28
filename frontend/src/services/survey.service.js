@@ -5,3 +5,4 @@ export const getSurveyResponses = (id, params) => api.get(`/surveys/${id}/respon
 export const createSurvey = (data) => api.post('/surveys', data);
 export const getSurveyQuestions = (id) => api.get(`/surveys/${id}/questions`);
 export const submitSurveyResponse = (id, data) => api.post(`/surveys/${id}/responses`, data);
+export const deleteSurvey = (id) => api.delete(`/surveys/${id}`);
