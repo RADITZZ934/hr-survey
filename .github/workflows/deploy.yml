@@ -79,5 +79,7 @@ jobs:
 
       - name: Execute Deploy Script
         run: |
+          mkdir -p ~/hrd/script
+          cp deploy.sh ~/hrd/script/deploy.sh
           chmod +x ~/hrd/script/deploy.sh
           ~/hrd/script/deploy.sh ~/hrd/tmp/release.tar.gz
