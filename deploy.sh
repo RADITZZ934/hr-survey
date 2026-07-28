@@ -10,8 +10,8 @@ LOG_DIR="$APP_DIR/logs"
 # PM2 App Names & Ports
 FRONTEND_APP_NAME="hr-survey-frontend"
 BACKEND_APP_NAME="hr-survey-backend"
-PORT_FRONTEND=1301
-PORT_BACKEND=1302
+PORT_FRONTEND=1401
+PORT_BACKEND=1402
 
 # Print with styling
 log_info() {
