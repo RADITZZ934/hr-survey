@@ -422,11 +422,11 @@ const exportToExcel = () => {
   const data = filteredRespondents.value.map((res, index) => {
     const row = {
       'No': index + 1,
-      'Nama Responden': res.name,
+      'Nama Responden': res.name || 'Anonim',
       'Email': res.email || 'Anonim',
       'Departemen': res.department || '-',
-      'Skor Rata-rata': res.avgRating.toFixed(2),
-      'Metode': res.name.toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli',
+      'Skor Rata-rata': (res.avgRating || 0).toFixed(2),
+      'Metode': (res.name || '').toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli',
       'Waktu Pengisian': res.submittedAt,
     };
 
@@ -456,20 +456,20 @@ const scoreFilter = ref('all');
 const anonFilter = ref('all');
 
 const filteredRespondents = computed(() => {
-  let list = respondents.value;
+  let list = respondents.value || [];
 
   // Filter based on Score
   if (scoreFilter.value === 'under_60') {
-    list = list.filter(res => Math.round((res.avgRating / 5) * 100) < 60);
+    list = list.filter(res => Math.round(((res.avgRating || 0) / 5) * 100) < 60);
   } else if (scoreFilter.value === 'above_60') {
-    list = list.filter(res => Math.round((res.avgRating / 5) * 100) >= 60);
+    list = list.filter(res => Math.round(((res.avgRating || 0) / 5) * 100) >= 60);
   }
 
   // Filter based on Anon/Non-Anon
   if (anonFilter.value === 'anon') {
-    list = list.filter(res => res.name.toLowerCase() === 'anonim');
+    list = list.filter(res => (res.name || '').toLowerCase() === 'anonim');
   } else if (anonFilter.value === 'non_anon') {
-    list = list.filter(res => res.name.toLowerCase() !== 'anonim');
+    list = list.filter(res => (res.name || '').toLowerCase() !== 'anonim');
   }
 
   const localQuery = searchQuery.value.toLowerCase().trim();
@@ -478,7 +478,7 @@ const filteredRespondents = computed(() => {
 
   if (!query) return list;
   return list.filter(res => 
-    res.name.toLowerCase().includes(query)
+    (res.name || '').toLowerCase().includes(query)
   );
 });
 
