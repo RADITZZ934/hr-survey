@@ -77,14 +77,17 @@ tar -czf "$BACKUP_DIR/backup_$TIMESTAMP.tar.gz" -C "$APP_DIR" backend 2>/dev/nul
 # ---------------------------------------------------------
 log_info "Deploying Backend..."
 if [ -d "$APP_DIR/tmp_extract/backend" ]; then
+  # Stop backend first to avoid "Text file busy" error when copying Go binary
+  pm2 stop "$BACKEND_APP_NAME" 2>/dev/null || true
+
   cp -r "$APP_DIR/tmp_extract/backend/." "$BACKEND_TARGET_DIR/"
   
   # Restart / Start Backend dengan PM2
   cd "$BACKEND_TARGET_DIR" || exit 1
   
-  # Jalankan binary Go via PM2
-  PORT=$PORT_BACKEND pm2 restart "$BACKEND_APP_NAME" --update-env 2>/dev/null || \
-  PORT=$PORT_BACKEND pm2 start ./hrd-backend --name "$BACKEND_APP_NAME"
+  # Jalankan/Start kembali binary Go via PM2
+  PORT=$PORT_BACKEND pm2 start ./hrd-backend --name "$BACKEND_APP_NAME" --update-env 2>/dev/null || \
+  PORT=$PORT_BACKEND pm2 restart "$BACKEND_APP_NAME" --update-env
   
   log_success "Backend deployed and running on port $PORT_BACKEND"
 else
