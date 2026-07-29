@@ -28,22 +28,10 @@
         <!-- Star Legend Note -->
         <div v-if="activeCategory?.questions.some(q => q.type === 'star')" class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] sm:text-xs text-slate-500 space-y-1.5 shadow-xs">
           <div class="font-bold text-slate-600">Petunjuk Pengisian Penilaian Bintang:</div>
-          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 font-medium">
+          <div class="flex flex-wrap gap-x-6 gap-y-1 font-medium">
             <div class="flex items-center gap-1.5">
               <span class="bg-amber-400/10 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">1</span>
               <span>Sangat tidak setuju</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="bg-amber-400/10 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">2</span>
-              <span>Tidak setuju</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="bg-amber-400/10 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">3</span>
-              <span>Cukup</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <span class="bg-amber-400/10 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">4</span>
-              <span>Setuju</span>
             </div>
             <div class="flex items-center gap-1.5">
               <span class="bg-amber-400/10 text-amber-700 px-1.5 py-0.5 rounded text-[10px] font-bold">5</span>
