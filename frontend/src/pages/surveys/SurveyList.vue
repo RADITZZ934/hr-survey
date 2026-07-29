@@ -310,7 +310,8 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="text-[11px] font-bold text-white uppercase tracking-wider bg-[#4647AE]">
-              <th class="py-4 px-6 rounded-tl-[1.5rem]">Survey Details</th>
+              <th class="py-4 px-6 rounded-tl-[1.5rem]">Survey Title</th>
+              <th class="py-4 px-4">Description</th>
               <th class="py-4 px-4 text-center">Status</th>
               <th class="py-4 px-4 text-center">Timeline</th>
               <th class="py-4 px-4 text-right">Responses</th>
@@ -323,11 +324,18 @@
               :key="survey.id" 
               class="hover:bg-slate-50/40 transition-colors group"
             >
-              <!-- Info Column -->
+              <!-- Title Column -->
               <td class="py-5 px-6">
-                <div class="space-y-1">
-                  <span class="font-semibold text-slate-800 text-base block">{{ survey.title }}</span>
-                  <span class="text-xs text-slate-400 block line-clamp-1 max-w-md">{{ survey.description || 'No description provided.' }}</span>
+                <span class="font-semibold text-slate-800 text-sm block">{{ survey.title }}</span>
+              </td>
+              
+              <!-- Description Column -->
+              <td class="py-5 px-4 max-w-xs">
+                <div 
+                  class="text-xs text-slate-500 line-clamp-2 hover:line-clamp-none transition-all duration-300 cursor-pointer" 
+                  title="Hover to expand description"
+                >
+                  {{ survey.description || '-' }}
                 </div>
               </td>
               
@@ -413,7 +421,7 @@
 
             <!-- Empty state -->
             <tr v-if="filteredSurveys.length === 0">
-              <td colspan="5" class="py-12 text-center text-slate-400">
+              <td colspan="6" class="py-12 text-center text-slate-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
