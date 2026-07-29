@@ -27,7 +27,7 @@ server {
 
     # Backend API Routing (/api/ atau /api)
     location /api {
-        proxy_pass http://127.0.0.1:1402/;
+        proxy_pass http://127.0.0.1:1402;
     }
 
     # Frontend App Routing (Default /)

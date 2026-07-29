@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine) {
-	api := r.Group("/")
+	api := r.Group("/api")
 	{
 		api.GET("", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
