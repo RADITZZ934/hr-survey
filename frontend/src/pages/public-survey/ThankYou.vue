@@ -4,9 +4,9 @@
     class="min-h-screen w-full bg-[#f0edf9] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans relative overflow-hidden cursor-pointer select-none"
   >
     <!-- Initial Page Load Celebration (Plays once) -->
-    <div v-if="showInitialCelebration" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
+    <div v-if="showInitialCelebration && celebrateDataUrl" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
       <lottie-player 
-        src="/celebrate.json" 
+        :src="celebrateDataUrl" 
         background="transparent" 
         speed="1.2" 
         style="width: 100%; height: 100%; object-fit: cover;" 
@@ -22,7 +22,8 @@
       :style="{ left: `${click.x}px`, top: `${click.y}px`, width: '150px', height: '150px' }"
     >
       <lottie-player 
-        src="/celebrate.json" 
+        v-if="celebrateDataUrl"
+        :src="celebrateDataUrl" 
         background="transparent" 
         speed="1.5" 
         style="width: 100%; height: 100%;" 
@@ -34,19 +35,8 @@
       
       <!-- App Brand & Logo Header -->
       <div class="flex flex-col items-center justify-center space-y-3">
-        <img src="/hrsurvey-result.png" class="h-16 w-auto object-contain" alt="Success Result Icon" />
+        <img src="/hrsurvey-icon.png" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
         <span class="text-base font-extrabold text-slate-800 tracking-tight">HR SURVEY TOOLS | LASKAR BUAH</span>
-      </div>
-      <!-- Lottie Animation -->
-      <div class="mx-auto flex justify-center" style="margin-top: -32px; margin-bottom: -48px;">
-        <lottie-player 
-          src="/Lovely cats.json" 
-          background="transparent" 
-          speed="1" 
-          style="width: 380px; height: 380px;" 
-          loop 
-          autoplay
-        ></lottie-player>
       </div>
 
             <!-- Score Result Summary Card -->
@@ -111,9 +101,43 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
+const CELEBRATE_CACHE_KEY = 'celebrate_json_cache';
+
 const resultData = ref(null);
 const showInitialCelebration = ref(true);
 const clicks = ref([]);
+const celebrateDataUrl = ref(null);
+
+// Create a Blob URL from raw JSON text for lottie-player
+const createBlobUrl = (jsonText) => {
+  const blob = new Blob([jsonText], { type: 'application/json' });
+  return URL.createObjectURL(blob);
+};
+
+// Load celebrate.json from localStorage cache, or fetch once and cache
+const loadCelebrateAnimation = async () => {
+  try {
+    const cached = localStorage.getItem(CELEBRATE_CACHE_KEY);
+    if (cached) {
+      celebrateDataUrl.value = createBlobUrl(cached);
+      return;
+    }
+    const res = await fetch('/celebrate.json');
+    const text = await res.text();
+    // Try to cache in localStorage for future visits
+    try {
+      localStorage.setItem(CELEBRATE_CACHE_KEY, text);
+    } catch (storageErr) {
+      // QuotaExceededError — skip caching, still works this session
+      console.warn('localStorage quota exceeded, celebrate.json will not be cached:', storageErr);
+    }
+    celebrateDataUrl.value = createBlobUrl(text);
+  } catch (e) {
+    console.error('Failed to load celebrate animation:', e);
+    // Fallback: just use the URL directly (no caching)
+    celebrateDataUrl.value = '/celebrate.json';
+  }
+};
 
 const handlePageClick = (e) => {
   const id = Date.now() + Math.random();
@@ -128,7 +152,10 @@ const handlePageClick = (e) => {
   }, 1500);
 };
 
-onMounted(() => {
+onMounted(async () => {
+  // Load celebrate animation from cache or network
+  await loadCelebrateAnimation();
+
   // Hide initial big celebration after 3 seconds
   setTimeout(() => {
     showInitialCelebration.value = false;
