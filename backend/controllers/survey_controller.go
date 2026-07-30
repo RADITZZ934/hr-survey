@@ -159,6 +159,7 @@ func GetSurveyQuestions(c *gin.Context) {
 		Joins("JOIN survey_questions ON survey_questions.question_id = questions.id").
 		Where("survey_questions.survey_id = ?", surveyID).
 		Preload("Category").
+		Order("questions.id ASC").
 		Find(&questions).Error
 
 	if err != nil {

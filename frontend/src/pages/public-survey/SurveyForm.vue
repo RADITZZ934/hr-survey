@@ -166,28 +166,22 @@ const autoResize = (event) => {
   el.style.height = `${el.scrollHeight}px`;
 };
 
-// Group questions by category name
+// Group questions by category name, preserving order from API (which matches Excel upload order)
 const categories = computed(() => {
-  const map = {};
+  const map = new Map();
   questions.value.forEach(q => {
     const catName = q.category || (q.type === 'essay' ? 'Essay' : 'Rating Bintang');
-    if (!map[catName]) {
-      map[catName] = {
+    if (!map.has(catName)) {
+      map.set(catName, {
         name: catName,
         questions: []
-      };
+      });
     }
-    map[catName].questions.push(q);
+    map.get(catName).questions.push(q);
   });
   
-  // Sort categories: put categories with star questions first, essay only categories last
-  return Object.values(map).sort((a, b) => {
-    const aHasStar = a.questions.some(q => q.type === 'star');
-    const bHasStar = b.questions.some(q => q.type === 'star');
-    if (aHasStar && !bHasStar) return -1;
-    if (!aHasStar && bHasStar) return 1;
-    return a.name.localeCompare(b.name);
-  });
+  // Return categories in first-appearance order (preserves Excel file order)
+  return Array.from(map.values());
 });
 
 const activeCategory = computed(() => {
