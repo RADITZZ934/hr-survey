@@ -540,7 +540,7 @@ const sendToActionPlan = (qa) => {
     answer: qa.answer
   };
   sessionStorage.setItem('action_plan_context', JSON.stringify(context));
-  router.push('/action-plans');
+  router.push('/dashboard/action-plans');
 };
 
 onMounted(() => {
