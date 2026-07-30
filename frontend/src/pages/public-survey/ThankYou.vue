@@ -35,7 +35,7 @@
       
       <!-- App Brand & Logo Header -->
       <div class="flex flex-col items-center justify-center space-y-3">
-        <img src="/hrsurvey-icon.png" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
+        <img src="/laskar-corps.png" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
         <span class="text-base font-extrabold text-slate-800 tracking-tight">HR SURVEY TOOLS | LASKAR BUAH</span>
       </div>
 

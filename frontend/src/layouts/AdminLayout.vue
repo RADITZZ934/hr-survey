@@ -7,7 +7,7 @@
         <!-- Top: Cream Logo Pill Badge -->
         <router-link to="/dashboard" class="group">
           <div class="w-12 h-12 rounded-2xl bg-[#f6f2e9] flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
-            <img src="/hrsurvey-icon.png" class="w-8 h-8 object-contain" alt="HR Survey Logo" />
+            <img src="/laskar-corps.png" class="w-8 h-8 object-contain" alt="HR Survey Logo" />
           </div>
         </router-link>
 
