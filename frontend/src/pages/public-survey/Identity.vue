@@ -53,8 +53,8 @@
         <strong>Pemberitahuan:</strong> Identitas dan nama Anda tidak akan dicatat. Survei ini akan dikirimkan secara anonim untuk menjaga privasi Anda.
       </div>
 
-      <!-- Department Input (Hidden until Identity selected) -->
-      <div v-if="selectedMode === 'identity'" class="space-y-1.5 animate-fade-in relative z-20">
+      <!-- Department Input (Shown when a mode is selected) -->
+      <div v-if="selectedMode" class="space-y-1.5 animate-fade-in relative z-20">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Departemen / Divisi</label>
         <div class="relative" ref="dropdownRef">
           <!-- Dropdown Trigger -->
@@ -239,9 +239,7 @@ const startSurvey = () => {
     ? 'ANONYMOUS'
     : employeeId.value;
 
-  const finalDept = isAnon
-    ? 'ANONYMOUS'
-    : department.value;
+  const finalDept = department.value;
 
   const surveyId = route.query.survey_id || '';
 
