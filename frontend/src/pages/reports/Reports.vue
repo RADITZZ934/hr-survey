@@ -286,6 +286,18 @@
             <div class="text-xs text-slate-600 bg-white border border-slate-100 p-2.5 rounded-lg leading-relaxed break-words">
               {{ qa.answer || (qa.score ? qa.score + ' dari 5 bintang.' : '-') }}
             </div>
+            <!-- Action to send to Action Plan if it's an essay answer -->
+            <div v-if="!qa.score && qa.answer" class="flex justify-end pt-1">
+              <button 
+                @click="sendToActionPlan(qa)"
+                class="px-2.5 py-1.5 bg-[#4647AE]/10 hover:bg-[#4647AE]/20 text-[#4647AE] text-[10px] font-bold rounded-lg transition-all flex items-center space-x-1 cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Buat Action Plan</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -307,9 +319,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { getSurveys, getSurveyReport, getSurveyResponses } from '../../services/survey.service';
 import { useSearchStore } from '../../stores/search';
 import * as XLSX from 'xlsx';
+
+const router = useRouter();
 
 const surveys = ref([]);
 const selectedSurveyId = ref(null);
@@ -514,6 +529,18 @@ const formatDate = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
   return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+};
+
+const sendToActionPlan = (qa) => {
+  const context = {
+    surveyId: selectedSurveyId.value,
+    respondentName: selectedRespondent.value?.name || 'Anonim',
+    department: selectedRespondent.value?.department || '-',
+    question: qa.question,
+    answer: qa.answer
+  };
+  sessionStorage.setItem('action_plan_context', JSON.stringify(context));
+  router.push('/action-plans');
 };
 
 onMounted(() => {

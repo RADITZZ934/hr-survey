@@ -497,11 +497,38 @@ const applyRecommendation = (rec) => {
   newPlan.value.description = rec.description;
 };
 
+const checkAndPreFillContext = () => {
+  const contextStr = sessionStorage.getItem('action_plan_context');
+  if (contextStr) {
+    try {
+      const context = JSON.parse(contextStr);
+      sessionStorage.removeItem('action_plan_context'); // Clean up
+
+      if (context.surveyId) {
+        selectedSurveyId.value = Number(context.surveyId);
+      }
+
+      newPlan.value = {
+        title: `Tindak Lanjut Masukan (${context.department})`,
+        description: `Ulasan Responden:\nNama: ${context.respondentName}\nDepartemen: ${context.department}\nPertanyaan: ${context.question}\nJawaban: "${context.answer}"\n\nRencana Tindakan:\n- `,
+        surveyId: context.surveyId || (surveys.value.length > 0 ? surveys.value[0].id : 1),
+        assigneeIndex: 0,
+        targetDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      };
+
+      isCreateModalOpen.value = true;
+    } catch (e) {
+      console.error('Failed to parse action_plan_context:', e);
+    }
+  }
+};
+
 const fetchInitialData = async () => {
   try {
     const res = await getSurveys();
     surveys.value = res.data;
     await fetchPlans();
+    checkAndPreFillContext();
   } catch (error) {
     console.error('Failed to load action plans initial data:', error);
   }
