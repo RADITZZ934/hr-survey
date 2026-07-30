@@ -54,7 +54,7 @@
       </div>
 
       <!-- Department Input (Hidden until Identity selected) -->
-      <div v-if="selectedMode === 'identity'" class="space-y-1.5 animate-fade-in">
+      <div v-if="selectedMode === 'identity'" class="space-y-1.5 animate-fade-in relative z-20">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Departemen / Divisi</label>
         <div class="relative" ref="dropdownRef">
           <!-- Dropdown Trigger -->
@@ -109,7 +109,7 @@
       </div>
 
       <!-- Submit Button (Hidden until a mode is selected) -->
-      <div v-if="selectedMode" class="pt-4 animate-fade-in">
+      <div v-if="selectedMode" class="pt-4 animate-fade-in relative z-10">
         <button 
           type="submit"
           class="w-full bg-[#4647AE] hover:bg-[#383994] active:bg-[#2e2e7a] text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center space-x-2"
