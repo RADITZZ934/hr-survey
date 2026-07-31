@@ -84,15 +84,7 @@
       </div>
 
 
-      <!-- Action Button -->
-      <div class="pt-2">
-        <router-link 
-          to="/dashboard"
-          class="inline-flex items-center justify-center space-x-2 w-full py-3.5 px-6 bg-[#4647AE] hover:bg-[#383994] active:bg-[#2e2e7a] text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-md shadow-indigo-200"
-        >
-          <span>Selesai & Kembali ke Dashboard</span>
-        </router-link>
-      </div>
+
 
     </div>
   </div>

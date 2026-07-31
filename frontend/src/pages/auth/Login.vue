@@ -119,12 +119,7 @@
       </div>
 
       <!-- Bottom Sign Up / Admin Hint Text -->
-      <div class="mt-6 text-center text-xs text-slate-400 font-medium">
-        Don't have an account? <span class="text-[#4d32e2] font-bold cursor-pointer hover:underline" @click="fillDefaultAdmin">Sign up</span>
-        <div class="mt-2 text-[10px] text-slate-400">
-          (Admin: <strong class="text-slate-700 cursor-pointer" @click="fillDefaultAdmin">hradmin / hrd2026</strong>)
-        </div>
-      </div>
+
 
     </div>
   </div>
