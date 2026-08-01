@@ -19,21 +19,36 @@ func GetEmployees(c *gin.Context) {
 		return
 	}
 
+	surveyIDStr := c.Query("survey_id")
+	var surveyID uint64
+	var hasSurveyFilter bool
+	if surveyIDStr != "" {
+		if id, err := strconv.ParseUint(surveyIDStr, 10, 32); err == nil {
+			surveyID = id
+			hasSurveyFilter = true
+		}
+	}
+
 	for i := range users {
 		var avgScore float64
 		var count int64
-		// We match either by user_id or respondent_id (username or email)
-		err := config.DB.Table("response_answers").
+		
+		avgQuery := config.DB.Table("response_answers").
 			Joins("JOIN responses ON response_answers.response_id = responses.id").
-			Where("(responses.user_id = ? OR responses.respondent_id = ? OR responses.respondent_id = ?) AND response_answers.score IS NOT NULL", users[i].ID, users[i].Username, users[i].Email).
-			Select("COALESCE(AVG(response_answers.score), 0)").
-			Row().Scan(&avgScore)
+			Where("(responses.user_id = ? OR responses.respondent_id = ? OR responses.respondent_id = ?) AND response_answers.score IS NOT NULL", users[i].ID, users[i].Username, users[i].Email)
 
+		countQuery := config.DB.Table("response_answers").
+			Joins("JOIN responses ON response_answers.response_id = responses.id").
+			Where("(responses.user_id = ? OR responses.respondent_id = ? OR responses.respondent_id = ?) AND response_answers.score IS NOT NULL", users[i].ID, users[i].Username, users[i].Email)
+
+		if hasSurveyFilter {
+			avgQuery = avgQuery.Where("responses.survey_id = ?", surveyID)
+			countQuery = countQuery.Where("responses.survey_id = ?", surveyID)
+		}
+
+		err := avgQuery.Select("COALESCE(AVG(response_answers.score), 0)").Row().Scan(&avgScore)
 		if err == nil {
-			_ = config.DB.Table("response_answers").
-				Joins("JOIN responses ON response_answers.response_id = responses.id").
-				Where("(responses.user_id = ? OR responses.respondent_id = ? OR responses.respondent_id = ?) AND response_answers.score IS NOT NULL", users[i].ID, users[i].Username, users[i].Email).
-				Count(&count)
+			_ = countQuery.Count(&count)
 		}
 
 		if count > 0 && avgScore > 0 {
@@ -41,6 +56,9 @@ func GetEmployees(c *gin.Context) {
 			percentage := int((avgScore / 5.0) * 100.0)
 			users[i].AvgScore = &formattedAvgScore
 			users[i].Percentage = &percentage
+		} else {
+			users[i].AvgScore = nil
+			users[i].Percentage = nil
 		}
 	}
 
@@ -173,13 +191,27 @@ type DeptSatisfaction struct {
 
 // GetDepartmentSatisfaction returns average satisfaction scores grouped by department
 func GetDepartmentSatisfaction(c *gin.Context) {
+	surveyIDStr := c.Query("survey_id")
+	var surveyID uint64
+	var hasSurveyFilter bool
+	if surveyIDStr != "" {
+		if id, err := strconv.ParseUint(surveyIDStr, 10, 32); err == nil {
+			surveyID = id
+			hasSurveyFilter = true
+		}
+	}
+
 	var results []DeptSatisfaction
-	err := config.DB.Table("responses").
+	dbQuery := config.DB.Table("responses").
 		Select("responses.respondent_dept as department, COALESCE(AVG(response_answers.score), 0) as avg_score, COUNT(DISTINCT responses.id) as count").
 		Joins("JOIN response_answers ON response_answers.response_id = responses.id").
-		Where("response_answers.score IS NOT NULL AND responses.respondent_dept != ''").
-		Group("responses.respondent_dept").
-		Scan(&results).Error
+		Where("response_answers.score IS NOT NULL AND responses.respondent_dept != ''")
+
+	if hasSurveyFilter {
+		dbQuery = dbQuery.Where("responses.survey_id = ?", surveyID)
+	}
+
+	err := dbQuery.Group("responses.respondent_dept").Scan(&results).Error
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch department satisfaction"})

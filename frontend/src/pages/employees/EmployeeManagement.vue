@@ -2,14 +2,31 @@
   <div class="space-y-6 animate-fade-in font-sans pb-6 select-none">
     
     <!-- Header Block -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">Manajemen Departemen & Karyawan</h1>
         <p class="text-xs sm:text-sm text-slate-400 mt-1">Daftar kepuasan per departemen beserta administrasi akun karyawan di dalamnya.</p>
       </div>
-      <div class="flex items-center space-x-3 w-full sm:w-auto">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+        <!-- Survey Selector Filter -->
+        <div class="relative w-full sm:w-56">
+          <select 
+            v-model="selectedSurveyId"
+            @change="handleSurveyChange"
+            class="w-full pl-4 pr-8 py-2.5 bg-white border border-slate-200/80 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-xs cursor-pointer appearance-none"
+          >
+            <option value="">Semua Survei</option>
+            <option v-for="s in surveys" :key="s.id" :value="s.id">{{ s.title }}</option>
+          </select>
+          <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
+
         <!-- Search bar -->
-        <div class="relative w-full sm:w-64">
+        <div class="relative w-full sm:w-52">
           <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -25,7 +42,7 @@
 
         <button 
           @click="openAddModal('')"
-          class="inline-flex items-center space-x-2 px-5 py-3 bg-[#4647AE] hover:bg-[#383994] active:bg-[#2e2e7a] text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-indigo-100 hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+          class="inline-flex items-center justify-center space-x-2 px-5 py-2.5 bg-[#4647AE] hover:bg-[#383994] active:bg-[#2e2e7a] text-white text-xs sm:text-sm font-bold rounded-xl shadow-md shadow-indigo-100 hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -293,10 +310,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getEmployees, createEmployee, updateEmployee, deleteEmployee, getDepartmentSatisfaction } from '../../services/employee.service';
+import { getSurveys } from '../../services/survey.service';
 
 const employees = ref([]);
 const searchQuery = ref('');
 const deptSatisfaction = ref([]);
+const surveys = ref([]);
+const selectedSurveyId = ref('');
 
 const showModal = ref(false);
 const isEditMode = ref(false);
@@ -370,9 +390,23 @@ const departments = [
   'PENJUALAN LALAMIE'
 ];
 
+const loadSurveys = async () => {
+  try {
+    const res = await getSurveys();
+    surveys.value = res.data || [];
+    if (surveys.value.length > 0) {
+      selectedSurveyId.value = surveys.value[0].id;
+    }
+  } catch (error) {
+    console.error('Failed to load surveys:', error);
+  }
+};
+
 const loadEmployees = async () => {
   try {
-    const res = await getEmployees();
+    const params = {};
+    if (selectedSurveyId.value) params.survey_id = selectedSurveyId.value;
+    const res = await getEmployees(params);
     employees.value = res.data || [];
   } catch (error) {
     console.error('Failed to load employees:', error);
@@ -381,11 +415,18 @@ const loadEmployees = async () => {
 
 const loadSatisfactionData = async () => {
   try {
-    const res = await getDepartmentSatisfaction();
+    const params = {};
+    if (selectedSurveyId.value) params.survey_id = selectedSurveyId.value;
+    const res = await getDepartmentSatisfaction(params);
     deptSatisfaction.value = res.data || [];
   } catch (error) {
     console.error('Failed to load department satisfaction:', error);
   }
+};
+
+const handleSurveyChange = () => {
+  loadEmployees();
+  loadSatisfactionData();
 };
 
 // Group employees by department and map satisfaction values
@@ -521,9 +562,12 @@ const getRoleLabel = (role) => {
   return 'Staf';
 };
 
-onMounted(() => {
-  loadEmployees();
-  loadSatisfactionData();
+onMounted(async () => {
+  await loadSurveys();
+  await Promise.all([
+    loadEmployees(),
+    loadSatisfactionData()
+  ]);
 });
 </script>
 
