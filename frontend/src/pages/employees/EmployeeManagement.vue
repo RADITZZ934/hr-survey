@@ -53,7 +53,7 @@
               <h3 class="font-extrabold text-slate-800 text-sm tracking-tight leading-none">{{ dept.displayName || dept.name }}</h3>
               <span class="text-[10px] font-bold text-slate-400 mt-1 block">
                 <span v-if="dept.name === 'ANONYMOUS'">Khusus Respon Anonim</span>
-                <span v-else>{{ dept.employees.length }} Karyawan</span>
+                <span v-else>{{ dept.responseCount }} Karyawan</span>
               </span>
             </div>
           </div>
