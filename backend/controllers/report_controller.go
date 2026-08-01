@@ -166,16 +166,46 @@ func GetSurveyResponses(c *gin.Context) {
 	startDate := c.Query("startDate")
 	endDate := c.Query("endDate")
 
-	dbResponse := config.DB.Where("survey_id = ?", surveyID)
-	if startDate != "" {
-		dbResponse = dbResponse.Where("submitted_at >= ?", startDate+" 00:00:00")
-	}
-	if endDate != "" {
-		dbResponse = dbResponse.Where("submitted_at <= ?", endDate+" 23:59:59")
+	// Get page and limit from query params, setting defaults (limit = 30)
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "30")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
 	}
 
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 {
+		limit = 30
+	}
+
+	offset := (page - 1) * limit
+
+	// Create count query to get total matching responses
+	var totalCount int64
+	countQuery := config.DB.Where("survey_id = ?", surveyID)
+	if startDate != "" {
+		countQuery = countQuery.Where("submitted_at >= ?", startDate+" 00:00:00")
+	}
+	if endDate != "" {
+		countQuery = countQuery.Where("submitted_at <= ?", endDate+" 23:59:59")
+	}
+	if err := countQuery.Model(&models.Response{}).Count(&totalCount).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count responses"})
+		return
+	}
+
+	// Create select query to get responses with pagination
 	var responses []models.Response
-	if err := dbResponse.Order("submitted_at desc").Find(&responses).Error; err != nil {
+	findQuery := config.DB.Where("survey_id = ?", surveyID)
+	if startDate != "" {
+		findQuery = findQuery.Where("submitted_at >= ?", startDate+" 00:00:00")
+	}
+	if endDate != "" {
+		findQuery = findQuery.Where("submitted_at <= ?", endDate+" 23:59:59")
+	}
+	if err := findQuery.Order("submitted_at desc").Limit(limit).Offset(offset).Find(&responses).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch responses"})
 		return
 	}
@@ -245,5 +275,17 @@ func GetSurveyResponses(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, logList)
+	// Calculate total pages
+	totalPages := int(totalCount) / limit
+	if int(totalCount)%limit != 0 {
+		totalPages++
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":       logList,
+		"total":      totalCount,
+		"page":       page,
+		"limit":      limit,
+		"totalPages": totalPages,
+	})
 }

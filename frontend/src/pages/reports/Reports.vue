@@ -219,6 +219,30 @@
               </tbody>
             </table>
           </div>
+          
+          <!-- Pagination Controls -->
+          <div v-if="totalPages > 1" class="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-white border-t border-slate-100/60 no-print gap-3">
+            <div class="text-xs font-semibold text-slate-500">
+              Menampilkan {{ (currentPage - 1) * 30 + 1 }} - {{ Math.min(currentPage * 30, totalRespondents) }} dari {{ totalRespondents }} responden
+            </div>
+            <div class="flex items-center space-x-2">
+              <button 
+                @click="prevPage" 
+                :disabled="currentPage === 1"
+                class="px-3 py-1.5 border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none rounded-xl transition-all cursor-pointer"
+              >
+                Sebelumnya
+              </button>
+              <span class="text-xs font-bold text-slate-700 px-2">Halaman {{ currentPage }} dari {{ totalPages }}</span>
+              <button 
+                @click="nextPage" 
+                :disabled="currentPage === totalPages"
+                class="px-3 py-1.5 border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none rounded-xl transition-all cursor-pointer"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -366,12 +390,14 @@ const endDate = computed(() => {
 
 const handlePresetChange = () => {
   if (datePreset.value !== 'custom') {
+    currentPage.value = 1;
     fetchReportDetails();
   }
 };
 
 const handleCustomDateChange = () => {
   if (customStartDate.value && customEndDate.value) {
+    currentPage.value = 1;
     fetchReportDetails();
   }
 };
@@ -387,6 +413,9 @@ const activeReport = ref({
 });
 
 const respondents = ref([]);
+const currentPage = ref(1);
+const totalPages = ref(1);
+const totalRespondents = ref(0);
 
 const fetchInitialData = async () => {
   try {
@@ -404,7 +433,10 @@ const fetchInitialData = async () => {
 const fetchReportDetails = async () => {
   if (!selectedSurveyId.value) return;
   try {
-    const params = {};
+    const params = {
+      page: currentPage.value,
+      limit: 30
+    };
     if (startDate.value) params.startDate = startDate.value;
     if (endDate.value) params.endDate = endDate.value;
 
@@ -413,7 +445,9 @@ const fetchReportDetails = async () => {
       getSurveyResponses(selectedSurveyId.value, params)
     ]);
     activeReport.value = reportRes.data;
-    respondents.value = responsesRes.data;
+    respondents.value = responsesRes.data.data || [];
+    totalPages.value = responsesRes.data.totalPages || 1;
+    totalRespondents.value = responsesRes.data.total || 0;
   } catch (error) {
     console.error('Failed to load report breakdown details:', error);
   }
@@ -425,7 +459,22 @@ const handleSurveyChange = () => {
   scoreFilter.value = 'all';
   anonFilter.value = 'all';
   datePreset.value = 'all';
+  currentPage.value = 1;
   fetchReportDetails();
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+    fetchReportDetails();
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    fetchReportDetails();
+  }
 };
 
 const exportToExcel = () => {
