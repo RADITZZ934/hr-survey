@@ -103,12 +103,17 @@
             <div class="flex items-center space-x-2">
               <button 
                 @click="exportToExcel"
-                class="inline-flex items-center space-x-1.5 px-4.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-100 hover:-translate-y-0.5 transition-all cursor-pointer"
+                :disabled="isExporting"
+                class="inline-flex items-center space-x-1.5 px-4.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-100 hover:-translate-y-0.5 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg v-if="isExporting" class="animate-spin -ml-1 mr-1.5 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <span>Unduh Excel</span>
+                <span>{{ isExporting ? 'Mengunduh...' : 'Unduh Excel' }}</span>
               </button>
               
               <button 
@@ -355,6 +360,7 @@ const selectedSurveyId = ref(null);
 const searchQuery = ref('');
 const selectedRespondent = ref(null);
 const searchStore = useSearchStore();
+const isExporting = ref(false);
 
 // Date Range Filter States
 const datePreset = ref('all');
@@ -477,39 +483,91 @@ const prevPage = () => {
   }
 };
 
-const exportToExcel = () => {
-  if (filteredRespondents.value.length === 0) {
+const exportToExcel = async () => {
+  if (totalRespondents.value === 0) {
     alert('Tidak ada data responden untuk diunduh.');
     return;
   }
 
-  const data = filteredRespondents.value.map((res, index) => {
-    const row = {
-      'No': index + 1,
-      'Nama Responden': res.name || 'Anonim',
-      'Email': res.email || 'Anonim',
-      'Departemen': res.department || '-',
-      'Skor Rata-rata': (res.avgRating || 0).toFixed(2),
-      'Metode': (res.name || '').toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli',
-      'Waktu Pengisian': res.submittedAt,
+  isExporting.value = true;
+  try {
+    // 1. Fetch ALL respondents from backend
+    const params = {
+      page: 1,
+      limit: totalRespondents.value
     };
+    if (startDate.value) params.startDate = startDate.value;
+    if (endDate.value) params.endDate = endDate.value;
 
-    (res.answers || []).forEach((ans, ansIdx) => {
-      row[`Pertanyaan ${ansIdx + 1}: ${ans.question}`] = ans.score !== undefined && ans.score !== null ? ans.score : ans.answer;
+    const res = await getSurveyResponses(selectedSurveyId.value, params);
+    const allRespondents = res.data.data || [];
+
+    // 2. Apply the same frontend filters on the full list
+    let list = allRespondents;
+
+    // Filter based on Score
+    if (scoreFilter.value === 'under_60') {
+      list = list.filter(r => Math.round(((r.avgRating || 0) / 5) * 100) < 60);
+    } else if (scoreFilter.value === 'above_60') {
+      list = list.filter(r => Math.round(((r.avgRating || 0) / 5) * 100) >= 60);
+    }
+
+    // Filter based on Anon/Non-Anon
+    if (anonFilter.value === 'anon') {
+      list = list.filter(r => (r.name || '').toLowerCase() === 'anonim');
+    } else if (anonFilter.value === 'non_anon') {
+      list = list.filter(r => (r.name || '').toLowerCase() !== 'anonim');
+    }
+
+    const localQuery = searchQuery.value.toLowerCase().trim();
+    const globalQuery = searchStore.searchQuery.toLowerCase().trim();
+    const query = localQuery || globalQuery;
+
+    if (query) {
+      list = list.filter(r => 
+        (r.name || '').toLowerCase().includes(query)
+      );
+    }
+
+    if (list.length === 0) {
+      alert('Tidak ada data responden yang sesuai dengan filter untuk diunduh.');
+      return;
+    }
+
+    // 3. Map to Excel structure
+    const data = list.map((res, index) => {
+      const row = {
+        'No': index + 1,
+        'Nama Responden': res.name || 'Anonim',
+        'Email': res.email || 'Anonim',
+        'Departemen': res.department || '-',
+        'Skor Rata-rata': (res.avgRating || 0).toFixed(2),
+        'Metode': (res.name || '').toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli',
+        'Waktu Pengisian': res.submittedAt,
+      };
+
+      (res.answers || []).forEach((ans, ansIdx) => {
+        row[`Pertanyaan ${ansIdx + 1}: ${ans.question}`] = ans.score !== undefined && ans.score !== null ? ans.score : ans.answer;
+      });
+
+      return row;
     });
 
-    return row;
-  });
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Respondent Log');
 
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Respondent Log');
+    const activeSurvey = surveys.value.find(s => s.id === selectedSurveyId.value);
+    const surveyTitle = activeSurvey ? activeSurvey.title.replace(/[^a-zA-Z0-9]/g, '_') : 'Survey';
+    const dateStr = new Date().toISOString().split('T')[0];
 
-  const activeSurvey = surveys.value.find(s => s.id === selectedSurveyId.value);
-  const surveyTitle = activeSurvey ? activeSurvey.title.replace(/[^a-zA-Z0-9]/g, '_') : 'Survey';
-  const dateStr = new Date().toISOString().split('T')[0];
-
-  XLSX.writeFile(workbook, `Laporan_${surveyTitle}_${dateStr}.xlsx`);
+    XLSX.writeFile(workbook, `Laporan_${surveyTitle}_${dateStr}.xlsx`);
+  } catch (error) {
+    console.error('Gagal mengunduh Excel:', error);
+    alert('Terjadi kesalahan saat mengunduh data Excel.');
+  } finally {
+    isExporting.value = false;
+  }
 };
 
 const printReport = () => {
