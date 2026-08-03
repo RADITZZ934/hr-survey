@@ -6,6 +6,7 @@ import (
 
 type Survey struct {
 	BaseModel
+	Visibility  string         `gorm:"size:20;not null;default:'internal'" json:"visibility"` // internal, external
 	TemplateID  *uint          `json:"template_id" gorm:"default:null"`
 	Template    SurveyTemplate `gorm:"foreignKey:TemplateID" json:"template,omitempty"`
 	Title       string         `gorm:"size:150;not null" json:"title"`

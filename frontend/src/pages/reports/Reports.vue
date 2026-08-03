@@ -1,5 +1,29 @@
 <template>
   <div class="space-y-6 animate-fade-in">
+    <!-- Accumulative Rating & Satisfaction Charts -->
+    <div v-if="activeReport" class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print animate-fade-in">
+      <!-- Chart 1: Bar Chart Rating Distribution -->
+      <div class="bg-white rounded-[2rem] border border-slate-100/80 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center justify-between">
+          <span>Akumulasi Distribusi Rating Bintang</span>
+          <span class="text-xs text-slate-400 font-normal normal-case">Skala 1 - 5</span>
+        </h3>
+        <div class="h-64 relative">
+          <canvas ref="barChartRef"></canvas>
+        </div>
+      </div>
+      <!-- Chart 2: Donut Chart Satisfaction Categories -->
+      <div class="bg-white rounded-[2rem] border border-slate-100/80 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center justify-between">
+          <span>Persentase Kategori Kepuasan</span>
+          <span class="text-xs text-slate-400 font-normal normal-case">Kategori Rata-rata</span>
+        </h3>
+        <div class="h-64 relative">
+          <canvas ref="donutChartRef"></canvas>
+        </div>
+      </div>
+    </div>
+
     <!-- Respondent Log & Detail Split View Container -->
     <div class="flex flex-col lg:flex-row gap-6 items-start transition-all duration-300">
       
@@ -137,7 +161,7 @@
                 <tr class="text-[11px] font-bold text-white uppercase tracking-wider bg-[#4647AE]">
                   <th class="py-4 px-4 text-center w-14 rounded-tl-[1.5rem]">No</th>
                   <th class="py-4 px-5 text-left">Respondent ID</th>
-                  <th class="py-4 px-5 text-left w-36">Departemen</th>
+                  <th class="py-4 px-5 text-left w-36">{{ isExternal ? 'Domisili' : 'Departemen' }}</th>
                   <th class="py-4 px-4 text-center w-28">Skor</th>
                   <th class="py-4 px-4 text-center w-36">Score Rating</th>
                   <th class="py-4 px-4 text-center w-40">Completion Status</th>
@@ -171,10 +195,17 @@
                     </div>
                   </td>
 
-                  <!-- Departemen -->
+                  <!-- Departemen / Domisili -->
                   <td class="py-4 px-5 text-left" @click="openDetails(res)">
                     <span 
-                      v-if="res.department && res.department !== '-'"
+                      v-if="isExternal && (res.respondent_province || res.respondent_regency)"
+                      class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-purple-50 text-purple-700 border border-purple-100"
+                      :title="`${res.respondent_province}, ${res.respondent_regency}`"
+                    >
+                      {{ res.respondent_regency || res.respondent_province }}
+                    </span>
+                    <span 
+                      v-else-if="!isExternal && res.department && res.department !== '-'"
                       class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-blue-50 text-blue-700 border border-blue-100"
                     >
                       {{ res.department }}
@@ -267,7 +298,9 @@
             />
             <div>
               <h3 class="text-sm font-bold text-slate-800 tracking-tight">{{ selectedRespondent.name }}</h3>
-              <p class="text-[10px] text-slate-400 font-bold mt-0.5">{{ selectedRespondent.department || '-' }}</p>
+              <p class="text-[10px] text-slate-400 font-bold mt-0.5">
+                {{ isExternal ? ((selectedRespondent.respondent_regency ? selectedRespondent.respondent_regency + ', ' : '') + selectedRespondent.respondent_province) : (selectedRespondent.department || '-') }}
+              </p>
             </div>
           </div>
           <button 
@@ -347,11 +380,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSurveys, getSurveyReport, getSurveyResponses } from '../../services/survey.service';
 import { useSearchStore } from '../../stores/search';
 import * as XLSX from 'xlsx';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 const router = useRouter();
 
@@ -361,6 +397,21 @@ const searchQuery = ref('');
 const selectedRespondent = ref(null);
 const searchStore = useSearchStore();
 const isExporting = ref(false);
+
+// Chart Refs & Instances
+const barChartRef = ref(null);
+const donutChartRef = ref(null);
+const barChartRefCanvas = ref(null); // fallback
+let barChartInstance = null;
+let donutChartInstance = null;
+
+const selectedSurvey = computed(() => {
+  return surveys.value.find(s => s.id === selectedSurveyId.value);
+});
+
+const isExternal = computed(() => {
+  return selectedSurvey.value?.visibility === 'external';
+});
 
 // Date Range Filter States
 const datePreset = ref('all');
@@ -436,6 +487,75 @@ const fetchInitialData = async () => {
   }
 };
 
+const initCharts = () => {
+  if (barChartInstance) barChartInstance.destroy();
+  if (donutChartInstance) donutChartInstance.destroy();
+
+  const dist = activeReport.value?.ratingDistribution || { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
+  const categoriesCount = activeReport.value?.satisfactionCategories || {
+    "Sangat Puas": 0,
+    "Puas": 0,
+    "Cukup": 0,
+    "Perlu Perhatian": 0,
+  };
+
+  if (barChartRef.value) {
+    const ctx = barChartRef.value.getContext('2d');
+    barChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['1 ★', '2 ★', '3 ★', '4 ★', '5 ★'],
+        datasets: [{
+          label: 'Jumlah Responden',
+          data: [dist["1"] || 0, dist["2"] || 0, dist["3"] || 0, dist["4"] || 0, dist["5"] || 0],
+          backgroundColor: '#4647AE',
+          borderRadius: 8,
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  }
+
+  if (donutChartRef.value) {
+    const ctx = donutChartRef.value.getContext('2d');
+    donutChartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(categoriesCount),
+        datasets: [{
+          data: Object.values(categoriesCount),
+          backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'],
+          borderWidth: 2,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { boxWidth: 12, font: { size: 11 } }
+          }
+        }
+      }
+    });
+  }
+};
+
 const fetchReportDetails = async () => {
   if (!selectedSurveyId.value) return;
   try {
@@ -454,6 +574,9 @@ const fetchReportDetails = async () => {
     respondents.value = responsesRes.data.data || [];
     totalPages.value = responsesRes.data.totalPages || 1;
     totalRespondents.value = responsesRes.data.total || 0;
+    
+    await nextTick();
+    initCharts();
   } catch (error) {
     console.error('Failed to load report breakdown details:', error);
   }
@@ -540,11 +663,18 @@ const exportToExcel = async () => {
         'No': index + 1,
         'Nama Responden': res.name || 'Anonim',
         'Email': res.email || 'Anonim',
-        'Departemen': res.department || '-',
-        'Skor Rata-rata': (res.avgRating || 0).toFixed(2),
-        'Metode': (res.name || '').toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli',
-        'Waktu Pengisian': res.submittedAt,
       };
+
+      if (isExternal.value) {
+        row['Provinsi'] = res.respondent_province || '-';
+        row['Kabupaten / Kota'] = res.respondent_regency || '-';
+      } else {
+        row['Departemen'] = res.department || '-';
+      }
+
+      row['Skor Rata-rata'] = (res.avgRating || 0).toFixed(2);
+      row['Metode'] = (res.name || '').toLowerCase() === 'anonim' ? 'Anonim' : 'Identitas Asli';
+      row['Waktu Pengisian'] = res.submittedAt;
 
       (res.answers || []).forEach((ans, ansIdx) => {
         row[`Pertanyaan ${ansIdx + 1}: ${ans.question}`] = ans.score !== undefined && ans.score !== null ? ans.score : ans.answer;
@@ -642,7 +772,7 @@ const sendToActionPlan = (qa) => {
   const context = {
     surveyId: selectedSurveyId.value,
     respondentName: selectedRespondent.value?.name || 'Anonim',
-    department: selectedRespondent.value?.department || '-',
+    department: isExternal.value ? ((selectedRespondent.value?.respondent_regency ? selectedRespondent.value?.respondent_regency + ', ' : '') + (selectedRespondent.value?.respondent_province || '')) : (selectedRespondent.value?.department || '-'),
     question: qa.question,
     answer: qa.answer
   };

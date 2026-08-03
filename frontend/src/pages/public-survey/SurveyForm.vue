@@ -295,6 +295,8 @@ const submitSurvey = async () => {
     const payload = {
       respondent_id: sessionStorage.getItem('respondent_id') || 'ANONYMOUS',
       respondent_dept: sessionStorage.getItem('respondent_dept') || 'ANONYMOUS',
+      respondent_province: sessionStorage.getItem('respondent_province') || '',
+      respondent_regency: sessionStorage.getItem('respondent_regency') || '',
       answers: payloadAnswers
     };
 
@@ -307,6 +309,8 @@ const submitSurvey = async () => {
     // Clear cached respondent info after completing
     sessionStorage.removeItem('respondent_id');
     sessionStorage.removeItem('respondent_dept');
+    sessionStorage.removeItem('respondent_province');
+    sessionStorage.removeItem('respondent_regency');
     sessionStorage.removeItem('survey_id');
     
     router.push('/survey/thanks');

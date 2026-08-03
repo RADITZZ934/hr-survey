@@ -19,9 +19,11 @@ type AnswerInput struct {
 }
 
 type CreateResponseInput struct {
-	RespondentID   string        `json:"respondent_id"`
-	RespondentDept string        `json:"respondent_dept"`
-	Answers        []AnswerInput `json:"answers" binding:"required"`
+	RespondentID       string        `json:"respondent_id"`
+	RespondentDept     string        `json:"respondent_dept"`
+	RespondentProvince string        `json:"respondent_province"`
+	RespondentRegency  string        `json:"respondent_regency"`
+	Answers            []AnswerInput `json:"answers" binding:"required"`
 }
 
 func CreateResponse(c *gin.Context) {
@@ -64,11 +66,13 @@ func CreateResponse(c *gin.Context) {
 
 	// 1. Create Response
 	response := models.Response{
-		SurveyID:       uint(surveyID),
-		UserID:         userID,
-		RespondentID:   input.RespondentID,
-		RespondentDept: respondentDept,
-		SubmittedAt:    time.Now(),
+		SurveyID:           uint(surveyID),
+		UserID:             userID,
+		RespondentID:       input.RespondentID,
+		RespondentDept:     respondentDept,
+		RespondentProvince: input.RespondentProvince,
+		RespondentRegency:  input.RespondentRegency,
+		SubmittedAt:        time.Now(),
 	}
 
 	if err := tx.Create(&response).Error; err != nil {

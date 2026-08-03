@@ -28,8 +28,13 @@ func RegisterRoutes(r *gin.Engine) {
 		// Surveys
 		api.GET("/surveys", controllers.GetSurveys)
 		api.POST("/surveys", controllers.CreateSurvey)
+		api.GET("/surveys/:id", controllers.GetSurveyDetail)
 		api.GET("/surveys/:id/questions", controllers.GetSurveyQuestions)
 		api.DELETE("/surveys/:id", controllers.DeleteSurvey)
+
+		// Regions
+		api.GET("/regions/provinces", controllers.GetProvinces)
+		api.GET("/regions/regencies", controllers.GetRegencies)
 
 		// Categories
 		api.GET("/categories", controllers.GetCategories)

@@ -39,6 +39,7 @@ type CreateSurveyInput struct {
 	Description string          `json:"description"`
 	StartDate   string          `json:"start_date" binding:"required"`
 	EndDate     string          `json:"end_date" binding:"required"`
+	Visibility  string          `json:"visibility"`
 	TemplateID  *uint           `json:"template_id,omitempty"`
 	Questions   []QuestionInput `json:"questions"`
 }
@@ -70,11 +71,17 @@ func CreateSurvey(c *gin.Context) {
 		}
 	}()
 
+	visibility := input.Visibility
+	if visibility != "internal" && visibility != "external" {
+		visibility = "internal"
+	}
+
 	survey := models.Survey{
 		Title:       input.Title,
 		Description: input.Description,
 		StartDate:   start,
 		EndDate:     end,
+		Visibility:  visibility,
 		TemplateID:  input.TemplateID,
 		Status:      "active",
 		CreatedBy:   1, // Admin default creator
@@ -149,6 +156,18 @@ func CreateSurvey(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, survey)
+}
+
+func GetSurveyDetail(c *gin.Context) {
+	surveyID := c.Param("id")
+
+	var survey models.Survey
+	if err := config.DB.First(&survey, surveyID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Survey not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, survey)
 }
 
 func GetSurveyQuestions(c *gin.Context) {

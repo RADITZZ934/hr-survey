@@ -127,14 +127,84 @@ func GetSurveyReport(c *gin.Context) {
 	}
 	completionRate = float64(int(completionRate*10)) / 10
 
+	// 6. Compute rating distribution (count per star 1-5) for accumulation chart
+	ratingDistribution := map[string]int64{
+		"1": 0, "2": 0, "3": 0, "4": 0, "5": 0,
+	}
+
+	dbDist := config.DB.Table("response_answers").
+		Joins("JOIN responses ON response_answers.response_id = responses.id").
+		Where("responses.survey_id = ? AND response_answers.score IS NOT NULL", surveyID)
+	if startDate != "" {
+		dbDist = dbDist.Where("responses.submitted_at >= ?", startDate+" 00:00:00")
+	}
+	if endDate != "" {
+		dbDist = dbDist.Where("responses.submitted_at <= ?", endDate+" 23:59:59")
+	}
+
+	distRows, err := dbDist.Select("response_answers.score, COUNT(*) as cnt").
+		Group("response_answers.score").
+		Rows()
+
+	if err == nil {
+		defer distRows.Close()
+		for distRows.Next() {
+			var score int
+			var cnt int64
+			if err := distRows.Scan(&score, &cnt); err == nil {
+				key := strconv.Itoa(score)
+				if _, ok := ratingDistribution[key]; ok {
+					ratingDistribution[key] = cnt
+				}
+			}
+		}
+	}
+
+	// 7. Compute satisfaction categories count
+	satisfactionCategories := map[string]int64{
+		"Sangat Puas":     0,
+		"Puas":            0,
+		"Cukup":           0,
+		"Perlu Perhatian": 0,
+	}
+
+	// Query per-response average scores to categorize each respondent
+	catRows, catErr := config.DB.Table("response_answers").
+		Select("response_answers.response_id, AVG(response_answers.score) as avg_score").
+		Joins("JOIN responses ON response_answers.response_id = responses.id").
+		Where("responses.survey_id = ? AND response_answers.score IS NOT NULL", surveyID).
+		Group("response_answers.response_id").
+		Rows()
+
+	if catErr == nil {
+		defer catRows.Close()
+		for catRows.Next() {
+			var responseID uint
+			var respAvg float64
+			if err := catRows.Scan(&responseID, &respAvg); err == nil {
+				if respAvg >= 4.5 {
+					satisfactionCategories["Sangat Puas"]++
+				} else if respAvg >= 3.5 {
+					satisfactionCategories["Puas"]++
+				} else if respAvg >= 2.5 {
+					satisfactionCategories["Cukup"]++
+				} else {
+					satisfactionCategories["Perlu Perhatian"]++
+				}
+			}
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"avgScore":          formattedAvgScore,
-		"totalResponses":    totalResponses,
-		"completionRate":    completionRate,
-		"actionPlansCount":  actionPlansCount,
-		"strengths":         strengths,
-		"improvements":      improvements,
-		"categories":        categories,
+		"avgScore":                formattedAvgScore,
+		"totalResponses":          totalResponses,
+		"completionRate":          completionRate,
+		"actionPlansCount":        actionPlansCount,
+		"strengths":               strengths,
+		"improvements":            improvements,
+		"categories":              categories,
+		"ratingDistribution":      ratingDistribution,
+		"satisfactionCategories":  satisfactionCategories,
 	})
 }
 
@@ -145,14 +215,16 @@ type AnswerDetail struct {
 }
 
 type RespondentLog struct {
-	ID          uint           `json:"id"`
-	Initials    string         `json:"initials"`
-	Name        string         `json:"name"`
-	Email       string         `json:"email"`
-	Department  string         `json:"department"`
-	AvgRating   float64        `json:"avgRating"`
-	SubmittedAt string         `json:"submittedAt"`
-	Answers     []AnswerDetail `json:"answers"`
+	ID                 uint           `json:"id"`
+	Initials           string         `json:"initials"`
+	Name               string         `json:"name"`
+	Email              string         `json:"email"`
+	Department         string         `json:"department"`
+	RespondentProvince string         `json:"respondent_province"`
+	RespondentRegency  string         `json:"respondent_regency"`
+	AvgRating          float64        `json:"avgRating"`
+	SubmittedAt        string         `json:"submittedAt"`
+	Answers            []AnswerDetail `json:"answers"`
 }
 
 func GetSurveyResponses(c *gin.Context) {
@@ -264,14 +336,16 @@ func GetSurveyResponses(c *gin.Context) {
 		}
 
 		logList = append(logList, RespondentLog{
-			ID:          r.ID,
-			Initials:    initials,
-			Name:        name,
-			Email:       email,
-			Department:  dept,
-			AvgRating:   avgRating,
-			SubmittedAt: r.SubmittedAt.Format(time.RFC1123),
-			Answers:     answerDetails,
+			ID:                 r.ID,
+			Initials:           initials,
+			Name:               name,
+			Email:              email,
+			Department:         dept,
+			RespondentProvince: r.RespondentProvince,
+			RespondentRegency:  r.RespondentRegency,
+			AvgRating:          avgRating,
+			SubmittedAt:        r.SubmittedAt.Format(time.RFC1123),
+			Answers:            answerDetails,
 		})
 	}
 

@@ -14,7 +14,7 @@
     <!-- Form -->
     <form @submit.prevent="startSurvey" class="space-y-5">
       <!-- Mode Selection Toggle -->
-      <div class="space-y-1.5">
+      <div v-if="surveyVisibility === 'internal'" class="space-y-1.5">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Metode Pengisian</label>
         <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
           <button 
@@ -53,8 +53,94 @@
         <strong>Pemberitahuan:</strong> Identitas dan nama Anda tidak akan dicatat. Survei ini akan dikirimkan secara anonim untuk menjaga privasi Anda.
       </div>
 
-      <!-- Department Input (Shown when a mode is selected) -->
-      <div v-if="selectedMode" class="space-y-1.5 animate-fade-in relative z-20">
+      <!-- Domicile Selection (Shown when survey is external) -->
+      <div v-if="surveyVisibility === 'external' && selectedMode === 'identity'" class="space-y-4 animate-fade-in">
+        <!-- Province Dropdown -->
+        <div class="space-y-1.5 relative z-20" ref="provinceRef">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Provinsi</label>
+          <button
+            type="button"
+            @click="toggleProvinceDropdown"
+            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white"
+            :class="showProvinceDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+          >
+            <span :class="selectedProvince ? 'text-slate-700' : 'text-slate-400'">{{ selectedProvince?.name || 'Pilih Provinsi' }}</span>
+            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showProvinceDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <input type="text" :value="selectedProvince?.name || ''" required class="sr-only" tabindex="-1" />
+          
+          <div v-if="showProvinceDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+            <!-- Search Province -->
+            <div class="p-2 border-b border-slate-100">
+              <input
+                v-model="provinceSearch"
+                type="text"
+                placeholder="Cari provinsi..."
+                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
+                @click.stop
+              />
+            </div>
+            <ul class="max-h-48 overflow-y-auto py-1">
+              <li
+                v-for="prov in filteredProvinces"
+                :key="prov.id"
+                @click="selectProvince(prov)"
+                class="px-4 py-2 text-sm cursor-pointer transition-colors"
+                :class="selectedProvince?.id === prov.id ? 'bg-[#4647AE]/10 text-[#4647AE] font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+              >
+                {{ prov.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Regency Dropdown -->
+        <div class="space-y-1.5 relative z-10" ref="regencyRef">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Kabupaten / Kota</label>
+          <button
+            type="button"
+            @click="toggleRegencyDropdown"
+            :disabled="!selectedProvince"
+            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
+            :class="showRegencyDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+          >
+            <span :class="selectedRegency ? 'text-slate-700' : 'text-slate-400'">{{ selectedRegency?.name || 'Pilih Kabupaten/Kota' }}</span>
+            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showRegencyDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <input type="text" :value="selectedRegency?.name || ''" required class="sr-only" tabindex="-1" />
+          
+          <div v-if="showRegencyDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+            <!-- Search Regency -->
+            <div class="p-2 border-b border-slate-100">
+              <input
+                v-model="regencySearch"
+                type="text"
+                placeholder="Cari kabupaten/kota..."
+                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
+                @click.stop
+              />
+            </div>
+            <ul class="max-h-48 overflow-y-auto py-1">
+              <li
+                v-for="reg in filteredRegencies"
+                :key="reg.id"
+                @click="selectRegency(reg)"
+                class="px-4 py-2 text-sm cursor-pointer transition-colors"
+                :class="selectedRegency?.id === reg.id ? 'bg-[#4647AE]/10 text-[#4647AE] font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+              >
+                {{ reg.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Department Input (Shown when a mode is selected for internal) -->
+      <div v-if="selectedMode && surveyVisibility === 'internal'" class="space-y-1.5 animate-fade-in relative z-20">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Departemen / Divisi</label>
         <div class="relative" ref="dropdownRef">
           <!-- Dropdown Trigger -->
@@ -127,12 +213,25 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { getSurveyDetail, getProvinces, getRegencies } from '../../services/survey.service';
 
 const router = useRouter();
 const route = useRoute();
 const selectedMode = ref(null);
 const employeeId = ref('');
 const department = ref('');
+
+const surveyVisibility = ref('internal');
+const provinces = ref([]);
+const regencies = ref([]);
+const selectedProvince = ref(null);
+const selectedRegency = ref(null);
+const showProvinceDropdown = ref(false);
+const showRegencyDropdown = ref(false);
+const provinceSearch = ref('');
+const regencySearch = ref('');
+const provinceRef = ref(null);
+const regencyRef = ref(null);
 
 // Searchable dropdown state
 const showDropdown = ref(false);
@@ -205,6 +304,48 @@ const filteredDepartments = computed(() => {
   return departments.filter(d => d.toLowerCase().includes(q));
 });
 
+const filteredProvinces = computed(() => {
+  if (!provinceSearch.value) return provinces.value;
+  const q = provinceSearch.value.toLowerCase();
+  return provinces.value.filter(p => p.name.toLowerCase().includes(q));
+});
+
+const filteredRegencies = computed(() => {
+  if (!regencySearch.value) return regencies.value;
+  const q = regencySearch.value.toLowerCase();
+  return regencies.value.filter(r => r.name.toLowerCase().includes(q));
+});
+
+const toggleProvinceDropdown = () => {
+  showProvinceDropdown.value = !showProvinceDropdown.value;
+  showRegencyDropdown.value = false;
+};
+
+const toggleRegencyDropdown = () => {
+  if (!selectedProvince.value) return;
+  showRegencyDropdown.value = !showRegencyDropdown.value;
+  showProvinceDropdown.value = false;
+};
+
+const selectProvince = async (prov) => {
+  selectedProvince.value = prov;
+  selectedRegency.value = null;
+  showProvinceDropdown.value = false;
+  provinceSearch.value = '';
+  try {
+    const res = await getRegencies(prov.id);
+    regencies.value = res.data;
+  } catch (err) {
+    console.error('Failed to fetch regencies:', err);
+  }
+};
+
+const selectRegency = (reg) => {
+  selectedRegency.value = reg;
+  showRegencyDropdown.value = false;
+  regencySearch.value = '';
+};
+
 const selectDepartment = (dept) => {
   department.value = dept;
   showDropdown.value = false;
@@ -226,9 +367,33 @@ const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     showDropdown.value = false;
   }
+  if (provinceRef.value && !provinceRef.value.contains(e.target)) {
+    showProvinceDropdown.value = false;
+  }
+  if (regencyRef.value && !regencyRef.value.contains(e.target)) {
+    showRegencyDropdown.value = false;
+  }
 };
 
-onMounted(() => document.addEventListener('click', handleClickOutside));
+onMounted(async () => {
+  document.addEventListener('click', handleClickOutside);
+  const surveyId = route.query.survey_id;
+  if (surveyId) {
+    try {
+      const res = await getSurveyDetail(surveyId);
+      surveyVisibility.value = res.data.visibility || 'internal';
+      if (surveyVisibility.value === 'external') {
+        selectedMode.value = 'identity';
+        // Fetch provinces
+        const provRes = await getProvinces();
+        provinces.value = provRes.data;
+      }
+    } catch (err) {
+      console.error('Failed to fetch survey details:', err);
+    }
+  }
+});
+
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
 const startSurvey = () => {
@@ -239,14 +404,21 @@ const startSurvey = () => {
     ? 'ANONYMOUS'
     : employeeId.value;
 
-  const finalDept = department.value;
-
   const surveyId = route.query.survey_id || '';
 
   // Save credentials/identity to session storage for the survey form step
   sessionStorage.setItem('respondent_id', finalId);
-  sessionStorage.setItem('respondent_dept', finalDept);
   sessionStorage.setItem('survey_id', surveyId);
+
+  if (surveyVisibility.value === 'external') {
+    sessionStorage.setItem('respondent_province', selectedProvince.value ? selectedProvince.value.name : '');
+    sessionStorage.setItem('respondent_regency', selectedRegency.value ? selectedRegency.value.name : '');
+    sessionStorage.setItem('respondent_dept', 'EXTERNAL');
+  } else {
+    sessionStorage.setItem('respondent_dept', department.value);
+    sessionStorage.setItem('respondent_province', '');
+    sessionStorage.setItem('respondent_regency', '');
+  }
   
   // Transition to survey questions page with survey_id query param
   router.push({ path: '/survey/form', query: { survey_id: surveyId } });

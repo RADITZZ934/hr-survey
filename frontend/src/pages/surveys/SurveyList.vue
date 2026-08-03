@@ -63,6 +63,27 @@
               class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
             ></textarea>
           </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Survey Visibility</label>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl max-w-md">
+              <button 
+                type="button"
+                @click="wizardForm.visibility = 'internal'"
+                class="py-2 text-xs font-bold rounded-lg transition-all"
+                :class="wizardForm.visibility === 'internal' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-700'"
+              >
+                Internal (Karyawan)
+              </button>
+              <button 
+                type="button"
+                @click="wizardForm.visibility = 'external'"
+                class="py-2 text-xs font-bold rounded-lg transition-all"
+                :class="wizardForm.visibility === 'external' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-700'"
+              >
+                External (Masyarakat / Customer)
+              </button>
+            </div>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date</label>
@@ -217,6 +238,10 @@
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">End Date</span>
               <p class="font-semibold text-slate-700">{{ wizardForm.end_date || '-' }}</p>
             </div>
+            <div class="space-y-1">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Survey Visibility</span>
+              <p class="font-semibold text-slate-700 capitalize">{{ wizardForm.visibility || 'internal' }}</p>
+            </div>
           </div>
           <div class="space-y-1 pt-2 border-t border-slate-200/50">
             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total Questions</span>
@@ -326,7 +351,15 @@
             >
               <!-- Title Column -->
               <td class="py-5 px-6">
-                <span class="font-semibold text-slate-800 text-sm block">{{ survey.title }}</span>
+                <div class="flex items-center space-x-2">
+                  <span class="font-semibold text-slate-800 text-sm block">{{ survey.title }}</span>
+                  <span 
+                    class="inline-flex px-2 py-0.5 text-[10px] font-bold rounded-md capitalize"
+                    :class="survey.visibility === 'external' ? 'text-purple-700 bg-purple-50 border border-purple-100' : 'text-blue-700 bg-blue-50 border border-blue-100'"
+                  >
+                    {{ survey.visibility || 'internal' }}
+                  </span>
+                </div>
               </td>
               
               <!-- Description Column -->
@@ -490,6 +523,7 @@ const wizardForm = ref({
   description: '',
   start_date: '',
   end_date: '',
+  visibility: 'internal',
   questions: []
 });
 
@@ -551,6 +585,7 @@ const openCreateWizard = () => {
     description: '',
     start_date: '',
     end_date: '',
+    visibility: 'internal',
     questions: []
   };
   currentStep.value = 1;
@@ -699,6 +734,7 @@ const submitSurvey = async () => {
       description: wizardForm.value.description,
       start_date: wizardForm.value.start_date,
       end_date: wizardForm.value.end_date,
+      visibility: wizardForm.value.visibility,
       questions: wizardForm.value.questions
     });
     isWizardOpen.value = false;
