@@ -70,6 +70,7 @@
               <h3 class="font-extrabold text-slate-800 text-sm tracking-tight leading-none">{{ dept.displayName || dept.name }}</h3>
               <span class="text-[10px] font-bold text-slate-400 mt-1 block">
                 <span v-if="dept.name === 'ANONYMOUS'">Khusus Respon Anonim</span>
+                <span v-else-if="dept.name === 'EXTERNAL'">Khusus Respon Eksternal</span>
                 <span v-else>{{ dept.responseCount }} Karyawan</span>
               </span>
             </div>
@@ -174,13 +175,14 @@
 
           <div v-if="dept.employees.length === 0" class="py-4 text-center text-slate-400 font-medium text-[11px] italic">
             <span v-if="dept.name === 'ANONYMOUS'">Respon tidak dikaitkan dengan akun karyawan.</span>
+            <span v-else-if="dept.name === 'EXTERNAL'">Respon diisi oleh pihak eksternal/umum.</span>
             <span v-else>Belum ada anggota karyawan.</span>
           </div>
         </div>
 
         <!-- Add Employee inline to this department -->
         <button 
-          v-if="dept.name !== 'ANONYMOUS'"
+          v-if="dept.name !== 'ANONYMOUS' && dept.name !== 'EXTERNAL'"
           @click="openAddModal(dept.name)"
           class="w-full py-2 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 cursor-pointer border border-slate-100"
         >
@@ -441,6 +443,9 @@ const groupedDepartments = computed(() => {
   // Initialize ANONYMOUS group
   groups['ANONYMOUS'] = [];
 
+  // Initialize EXTERNAL group
+  groups['EXTERNAL'] = [];
+
   // Filter employees first by search query
   let filtered = employees.value;
   if (searchQuery.value.trim() !== '') {
@@ -468,7 +473,9 @@ const groupedDepartments = computed(() => {
 
     return {
       name: deptName,
-      displayName: deptName === 'ANONYMOUS' ? 'Anonim (Anonymous)' : deptName,
+      displayName: deptName === 'ANONYMOUS' 
+        ? 'Anonim (Anonymous)' 
+        : (deptName === 'EXTERNAL' ? 'Eksternal (External)' : deptName),
       employees: groups[deptName],
       avgScore,
       percentage,
