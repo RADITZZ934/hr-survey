@@ -11,8 +11,26 @@
       <p class="text-xs text-slate-400">Silakan pilih metode pengisian dan lengkapi data Anda untuk memulai survei kepuasan karyawan Laskar Buah.</p>
     </div>
 
+    <!-- Error Notice Block -->
+    <div v-if="surveyError" class="p-5 bg-rose-50 border border-rose-100 rounded-2xl text-center space-y-3">
+      <div class="inline-flex p-2 bg-rose-100 text-rose-600 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div class="space-y-1 text-center">
+        <h3 class="font-bold text-slate-800 text-sm">Survei Tidak Tersedia</h3>
+        <p class="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+          <span v-if="surveyError === 'expired'">Maaf, masa pengisian kuesioner survei ini telah berakhir (expired).</span>
+          <span v-else-if="surveyError === 'not_started'">Survei ini belum dimulai.</span>
+          <span v-else-if="surveyError === 'not_found'">Survei tidak ditemukan. Silakan periksa kembali tautan Anda.</span>
+          <span v-else>Maaf, kuesioner survei ini sedang dinonaktifkan atau tidak tersedia saat ini.</span>
+        </p>
+      </div>
+    </div>
+
     <!-- Form -->
-    <form @submit.prevent="startSurvey" class="space-y-5">
+    <form v-else @submit.prevent="startSurvey" class="space-y-5">
       <!-- Mode Selection Toggle -->
       <div v-if="surveyVisibility === 'internal'" class="space-y-1.5">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Metode Pengisian</label>
@@ -220,6 +238,7 @@ const route = useRoute();
 const selectedMode = ref(null);
 const employeeId = ref('');
 const department = ref('');
+const surveyError = ref(''); // '', 'expired', 'not_started', 'inactive', 'not_found'
 
 const surveyVisibility = ref('internal');
 const provinces = ref([]);
@@ -381,7 +400,24 @@ onMounted(async () => {
   if (surveyId) {
     try {
       const res = await getSurveyDetail(surveyId);
-      surveyVisibility.value = res.data.visibility || 'internal';
+      const survey = res.data;
+      
+      // Perform timeline and status validation
+      const now = new Date();
+      const startDate = new Date(survey.start_date);
+      const endDate = new Date(survey.end_date);
+      // Set end date to the very end of that day (23:59:59)
+      endDate.setHours(23, 59, 59, 999);
+
+      if (survey.status !== 'active') {
+        surveyError.value = 'inactive';
+      } else if (now < startDate) {
+        surveyError.value = 'not_started';
+      } else if (now > endDate) {
+        surveyError.value = 'expired';
+      }
+
+      surveyVisibility.value = survey.visibility || 'internal';
       if (surveyVisibility.value === 'external') {
         selectedMode.value = 'identity';
         // Fetch provinces
@@ -390,7 +426,10 @@ onMounted(async () => {
       }
     } catch (err) {
       console.error('Failed to fetch survey details:', err);
+      surveyError.value = 'not_found';
     }
+  } else {
+    surveyError.value = 'not_found';
   }
 });
 

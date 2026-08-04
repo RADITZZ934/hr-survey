@@ -34,6 +34,26 @@ func CreateResponse(c *gin.Context) {
 		return
 	}
 
+	// Ensure the survey is active and within timeline
+	var survey models.Survey
+	if err := config.DB.First(&survey, surveyID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Survey not found"})
+		return
+	}
+
+	if survey.Status != "active" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Survey is not active"})
+		return
+	}
+
+	now := time.Now()
+	// Adjust survey.EndDate to include the entire last day
+	endLimit := survey.EndDate.Add(23*time.Hour + 59*time.Minute + 59*time.Second)
+	if now.Before(survey.StartDate) || now.After(endLimit) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Survey is outside the active timeline"})
+		return
+	}
+
 	var input CreateResponseInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
