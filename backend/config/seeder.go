@@ -22,6 +22,7 @@ func SeedDatabase() {
 			{Username: "admin", Email: "admin@company.com", Password: "hrd2026", Role: "admin"},
 			{Username: "diana_hr", Email: "diana.r@company.com", Password: "hrd2026", Role: "hr"},
 			{Username: "john_manager", Email: "john.d@company.com", Password: "hrd2026", Role: "manager"},
+			{Username: "Laskarcorps", Email: "laskarcorps@laskarbuah.com", Password: "laskarcorps5758", Role: "admin"},
 		}
 		for _, u := range users {
 			DB.Create(&u)
