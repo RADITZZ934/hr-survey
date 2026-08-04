@@ -159,14 +159,24 @@
                 <tbody class="divide-y divide-slate-50 text-sm">
                   <tr v-for="(q, idx) in wizardForm.questions" :key="idx" class="hover:bg-slate-50/20 transition-colors">
                     <td class="py-3.5 px-4 text-center font-bold text-slate-400 text-xs">{{ idx + 1 }}</td>
-                    <td class="py-3.5 px-4">
+                    <td class="py-3.5 px-4 space-y-1.5">
                       <input 
                         v-model="q.text"
                         type="text"
                         required
                         placeholder="Type question here..."
-                        class="w-full bg-transparent border-b border-transparent focus:border-blue-500 focus:outline-none py-1 text-slate-700 text-sm font-semibold transition-all"
+                        class="w-full bg-transparent border-b border-slate-200/40 focus:border-blue-500 focus:outline-none py-1 text-slate-700 text-sm font-semibold transition-all"
                       />
+                      <div v-if="q.type === 'radio'" class="flex items-center space-x-2">
+                        <span class="text-[10px] font-bold text-[#4647AE] uppercase tracking-wider whitespace-nowrap">Opsi Pilihan:</span>
+                        <input 
+                          v-model="q.rawOptions"
+                          type="text"
+                          required
+                          placeholder="Contoh: Pilihan A, Pilihan B, Pilihan C (Pisahkan dengan koma)"
+                          class="w-full bg-slate-50 border border-slate-200/60 rounded-xl px-2.5 py-1 text-[11px] font-medium text-slate-600 focus:outline-none focus:bg-white"
+                        />
+                      </div>
                     </td>
                     <td class="py-3.5 px-4">
                       <select 
@@ -176,6 +186,7 @@
                       >
                         <option value="star">Rating Bintang</option>
                         <option value="essay">Essay</option>
+                        <option value="radio">Pilihan Ganda (Radio)</option>
                       </select>
                     </td>
                     <td class="py-3.5 px-4">
@@ -608,18 +619,18 @@ const prevStep = () => {
   }
 };
 
-// Dynamic Template Download
+// Dynamic Template Excel Generator
 const downloadExcelTemplate = () => {
   const wsData = [
-    ["Work-Life Balance"], // Category Header Row
-    ["Pertanyaan", "Tipe", "", "ATURAN PENGISIAN TEMPLATE:"],
-    ["Seberapa puas Anda dengan keseimbangan waktu kerja (Work-Life Balance) di perusahaan?", 1, "", "1. Tulis nama kategori pada baris tersendiri (tanpa mengisi kolom Tipe) sebagai pembatas kategori."],
-    ["Berikan saran atau kritik Anda untuk meningkatkan kenyamanan bekerja di kantor.", 2, "", "2. Di bawah baris kategori, buat header tabel dengan kolom 'Pertanyaan' dan 'Tipe'."],
-    ["", "", "", "3. Kolom 'Pertanyaan' diisi dengan teks pertanyaan kuesioner."],
+    ["Pertanyaan", "Tipe", "Opsi (Khusus Pilihan Ganda)", "ATURAN PENGISIAN TEMPLATE:"],
+    ["Seberapa sering Anda berbelanja di toko kami?", 3, "Pertama kali, Jarang, Cukup Sering, Sangat Sering", "1. Tulis nama kategori pada baris tersendiri (tanpa mengisi kolom Tipe/Opsi) sebagai pembatas kategori."],
+    ["Seberapa puas Anda dengan keseimbangan waktu kerja (Work-Life Balance) di perusahaan?", 1, "", "2. Di bawah baris kategori, buat header tabel dengan kolom 'Pertanyaan', 'Tipe', dan 'Opsi (Khusus Pilihan Ganda)'."],
+    ["Berikan saran atau kritik Anda untuk meningkatkan kenyamanan bekerja di kantor.", 2, "", "3. Kolom 'Pertanyaan' diisi dengan teks pertanyaan kuesioner."],
+    ["", "", "", "4. Kolom 'Tipe' diisi angka: '1' (Rating Bintang), '2' (Essay), atau '3' (Pilihan Ganda)."],
     ["Manager Support"], // Category Header Row
-    ["Pertanyaan", "Tipe", "", "4. Kolom 'Tipe' diisi angka: '1' (Rating Bintang) atau '2' (Essay)."],
-    ["Bagaimana Anda menilai dukungan moral dan feedback dari atasan langsung Anda?", 1, "", "5. Pertanyaan di bawah judul kategori otomatis dikelompokkan ke dalam kategori tersebut."],
-    ["", "", "", "6. Harap tidak mengubah nama kolom header 'Pertanyaan' dan 'Tipe'."]
+    ["Pertanyaan", "Tipe", "Opsi (Khusus Pilihan Ganda)", "5. Jika Tipe = '3', isi kolom 'Opsi' dengan pilihan yang dipisahkan tanda koma."],
+    ["Bagaimana Anda menilai dukungan moral dan feedback dari atasan langsung Anda?", 1, "", "6. Pertanyaan di bawah judul kategori otomatis dikelompokkan ke dalam kategori tersebut."],
+    ["", "", "", "7. Harap tidak mengubah nama kolom header 'Pertanyaan' dan 'Tipe'."]
   ];
   
   const wb = XLSX.utils.book_new();
@@ -629,7 +640,7 @@ const downloadExcelTemplate = () => {
   ws['!cols'] = [
     { wch: 65 }, // Pertanyaan
     { wch: 10 }, // Tipe
-    { wch: 5 },  // Spasi kosong
+    { wch: 35 }, // Opsi
     { wch: 55 }  // Rules/Petunjuk
   ];
 
@@ -661,6 +672,7 @@ const handleExcelUpload = (event) => {
 
       const colA = String(row[0] || "").trim();
       const colB = String(row[1] || "").trim();
+      const colC = String(row[2] || "").trim();
 
       // Check if it's empty row
       if (!colA && !colB) continue;
@@ -686,16 +698,27 @@ const handleExcelUpload = (event) => {
       // If it has both question text and type, it's a question row
       if (colA && colB) {
         let type = "star";
+        let options = "";
+        let rawOptions = "";
         if (colB === "2" || colB.toLowerCase().includes("essay") || colB.toLowerCase().includes("text") || colB.toLowerCase().includes("tulis")) {
           type = "essay";
+        } else if (colB === "3" || colB.toLowerCase().includes("pilihan") || colB.toLowerCase().includes("radio")) {
+          type = "radio";
+          if (colC) {
+            rawOptions = colC;
+            const arr = colC.split(",").map(o => o.trim()).filter(o => o !== "");
+            options = JSON.stringify(arr);
+          }
         }
 
-        const is_required = (type === "star");
+        const is_required = (type === "star" || type === "radio");
 
         parsedQuestions.push({
           text: colA,
           type,
-          category: currentCategory || (type === "star" ? "Rating Bintang" : "Essay"),
+          options,
+          rawOptions,
+          category: currentCategory || (type === "star" ? "Rating Bintang" : (type === "radio" ? "Pilihan Ganda" : "Essay")),
           is_required
         });
       }
@@ -724,18 +747,36 @@ const removeQuestionRow = (idx) => {
 
 const handleTypeChange = (q) => {
   // Enforce defaults on type change: Rating Bintang -> Required YES, Essay -> Required NO
-  q.is_required = (q.type === 'star');
+  q.is_required = (q.type === 'star' || q.type === 'radio');
+  if (q.type === 'radio' && !q.rawOptions) {
+    q.rawOptions = "";
+  }
 };
 
 const submitSurvey = async () => {
   try {
+    const payloadQuestions = wizardForm.value.questions.map(q => {
+      let optionsJson = "";
+      if (q.type === 'radio') {
+        const arr = (q.rawOptions || "").split(",").map(o => o.trim()).filter(o => o !== "");
+        optionsJson = JSON.stringify(arr);
+      }
+      return {
+        text: q.text,
+        type: q.type,
+        category: q.category,
+        is_required: q.is_required,
+        options: optionsJson
+      };
+    });
+
     await createSurvey({
       title: wizardForm.value.title,
       description: wizardForm.value.description,
       start_date: wizardForm.value.start_date,
       end_date: wizardForm.value.end_date,
       visibility: wizardForm.value.visibility,
-      questions: wizardForm.value.questions
+      questions: payloadQuestions
     });
     isWizardOpen.value = false;
     await fetchInitialData();

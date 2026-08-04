@@ -32,6 +32,7 @@ type QuestionInput struct {
 	Type       string `json:"type" binding:"required"`
 	Category   string `json:"category"`
 	IsRequired bool   `json:"is_required"`
+	Options    string `json:"options"`
 }
 
 type CreateSurveyInput struct {
@@ -98,6 +99,8 @@ func CreateSurvey(c *gin.Context) {
 		questionType := "scale"
 		if qInput.Type == "essay" || qInput.Type == "text" {
 			questionType = "text"
+		} else if qInput.Type == "radio" {
+			questionType = "radio"
 		}
 
 		// Determine or create category
@@ -129,6 +132,7 @@ func CreateSurvey(c *gin.Context) {
 			Type:       questionType,
 			CategoryID: category.ID,
 			IsRequired: qInput.IsRequired,
+			Options:    qInput.Options,
 		}
 
 		if err := tx.Create(&question).Error; err != nil {

@@ -88,6 +88,25 @@
             </button>
           </div>
 
+          <!-- Multiple Choice Selection (Radio Cards) -->
+          <div v-else-if="q.type === 'radio'" class="grid grid-cols-1 gap-2.5 pt-2">
+            <label 
+              v-for="opt in q.options" 
+              :key="opt"
+              class="flex items-center space-x-3 p-3.5 border rounded-xl cursor-pointer transition-all hover:bg-slate-50/50"
+              :class="answers[q.id] === opt ? 'border-[#4647AE] bg-[#4647AE]/5 shadow-xs font-semibold' : 'border-slate-200'"
+            >
+              <input 
+                type="radio" 
+                :name="'q_' + q.id" 
+                :value="opt"
+                v-model="answers[q.id]"
+                class="w-4 h-4 text-[#4647AE] focus:ring-[#4647AE]"
+              />
+              <span class="text-xs sm:text-sm text-slate-700">{{ opt }}</span>
+            </label>
+          </div>
+
           <!-- Essay Text Area -->
           <div v-else class="pt-2">
             <textarea
@@ -201,6 +220,8 @@ const answeredCount = computed(() => {
     const ans = answers.value[q.id];
     if (q.type === 'essay') {
       return ans !== undefined && ans.trim() !== '';
+    } else if (q.type === 'radio') {
+      return ans !== undefined && ans !== '';
     } else {
       return ans !== undefined;
     }
@@ -220,6 +241,8 @@ const isActiveCategoryDisabled = computed(() => {
     const ans = answers.value[q.id];
     if (q.type === 'essay') {
       return !ans || !ans.trim();
+    } else if (q.type === 'radio') {
+      return !ans;
     } else {
       return ans === undefined;
     }
@@ -233,6 +256,8 @@ const isSubmitDisabled = computed(() => {
     const ans = answers.value[q.id];
     if (q.type === 'essay') {
       return !ans || !ans.trim();
+    } else if (q.type === 'radio') {
+      return !ans;
     } else {
       return ans === undefined;
     }
@@ -244,13 +269,24 @@ onMounted(async () => {
   if (surveyId) {
     try {
       const res = await getSurveyQuestions(surveyId);
-      questions.value = res.data.map(q => ({
-        id: q.id,
-        text: q.text,
-        category: q.category ? q.category.name : (q.category_id === 1 ? 'Rating Bintang' : 'Essay'),
-        type: q.type === 'text' ? 'essay' : 'star',
-        is_required: q.is_required
-      }));
+      questions.value = res.data.map(q => {
+        let parsedOptions = [];
+        if (q.type === 'radio' && q.options) {
+          try {
+            parsedOptions = JSON.parse(q.options);
+          } catch (e) {
+            console.error("Failed to parse options for question", q.id, e);
+          }
+        }
+        return {
+          id: q.id,
+          text: q.text,
+          category: q.category ? q.category.name : (q.category_id === 1 ? 'Rating Bintang' : (q.type === 'radio' ? 'Pilihan Ganda' : 'Essay')),
+          type: q.type === 'text' ? 'essay' : (q.type === 'radio' ? 'radio' : 'star'),
+          options: parsedOptions,
+          is_required: q.is_required
+        };
+      });
       
       // Initialize hover states for questions
       questions.value.forEach(q => {
@@ -280,6 +316,11 @@ const submitSurvey = async () => {
     const payloadAnswers = questions.value.map(q => {
       const ans = answers.value[q.id];
       if (q.type === 'essay') {
+        return {
+          question_id: q.id,
+          answer_text: ans || ""
+        };
+      } else if (q.type === 'radio') {
         return {
           question_id: q.id,
           answer_text: ans || ""
