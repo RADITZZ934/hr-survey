@@ -54,7 +54,7 @@
       </div>
 
       <!-- Domicile Selection (Shown when survey is external) -->
-      <div v-if="surveyVisibility === 'external' && selectedMode === 'identity'" class="space-y-4 animate-fade-in">
+      <div v-if="surveyVisibility === 'external' && selectedMode === 'identity'" class="space-y-4 animate-fade-in relative z-20">
         <!-- Province Dropdown -->
         <div class="space-y-1.5 relative z-20" ref="provinceRef">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Provinsi</label>
