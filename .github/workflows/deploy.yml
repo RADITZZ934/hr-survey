@@ -48,9 +48,10 @@ jobs:
       # Package the builds
       - name: Package Artifacts
         run: |
-          mkdir -p dist-release/backend
+          mkdir -p dist-release/backend/data
           mkdir -p dist-release/frontend
           cp backend/hrd-backend dist-release/backend/
+          cp -r backend/data/* dist-release/backend/data/
           cp -r frontend/dist/* dist-release/frontend/
           tar -czf release.tar.gz -C dist-release .
 

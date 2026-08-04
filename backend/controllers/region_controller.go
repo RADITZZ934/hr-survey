@@ -23,6 +23,14 @@ type Regency struct {
 
 // getDataDir returns the absolute path to the backend/data directory
 func getDataDir() string {
+	// Check if "data" directory exists in the current working directory first (production/deployment runtime)
+	if _, err := os.Stat("data"); err == nil {
+		if abs, err := filepath.Abs("data"); err == nil {
+			return abs
+		}
+		return "data"
+	}
+	// Fallback to compile-time source directory (for local development)
 	_, filename, _, _ := runtime.Caller(0)
 	return filepath.Join(filepath.Dir(filename), "..", "data")
 }
