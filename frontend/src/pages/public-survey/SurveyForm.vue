@@ -168,6 +168,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getSurveyQuestions, submitSurveyResponse } from '../../services/survey.service';
+import { surveyService } from '../../services/surveyService';
 
 const router = useRouter();
 const route = useRoute();
@@ -347,12 +348,41 @@ const submitSurvey = async () => {
       sessionStorage.setItem('survey_result', JSON.stringify(res.data.data));
     }
 
+    // Jika survey external: simpan ringkasan ke tabel survey_responses
+    const surveyVisibility = sessionStorage.getItem('survey_visibility');
+    if (surveyVisibility === 'external') {
+      // Hitung penilaian dari rata-rata jawaban bintang
+      const starAnswers = questions.value
+        .filter(q => q.type === 'star' && answers.value[q.id] !== undefined)
+        .map(q => Number(answers.value[q.id]));
+
+      let penilaian = 'baik';
+      if (starAnswers.length > 0) {
+        const avg = starAnswers.reduce((a, b) => a + b, 0) / starAnswers.length;
+        penilaian = avg >= 4 ? 'sangat_baik' : avg >= 3 ? 'baik' : 'kurang';
+      }
+
+      try {
+        await surveyService.submitResponse({
+          survey_id: Number(surveyId),
+          id_store: sessionStorage.getItem('id_store') || '',
+          nama_responden: sessionStorage.getItem('respondent_id') || 'ANONYMOUS',
+          penilaian,
+        });
+      } catch (err) {
+        // Non-blocking: survei utama sudah berhasil disimpan
+        console.error('Failed to save to survey_responses:', err);
+      }
+    }
+
     // Clear cached respondent info after completing
     sessionStorage.removeItem('respondent_id');
     sessionStorage.removeItem('respondent_dept');
     sessionStorage.removeItem('respondent_province');
     sessionStorage.removeItem('respondent_regency');
     sessionStorage.removeItem('survey_id');
+    sessionStorage.removeItem('survey_visibility');
+    sessionStorage.removeItem('id_store');
     
     router.push('/survey/thanks');
   } catch (error) {

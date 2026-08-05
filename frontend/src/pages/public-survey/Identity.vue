@@ -155,6 +155,51 @@
             </ul>
           </div>
         </div>
+
+        <!-- Store / Toko Dropdown (External Survey) -->
+        <div class="space-y-1.5 relative" ref="storeRef">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Toko / Lokasi Survey</label>
+          <button
+            type="button"
+            @click="showStoreDropdown = !showStoreDropdown"
+            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white"
+            :class="showStoreDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+          >
+            <span :class="selectedStore ? 'text-slate-700' : 'text-slate-400'">
+              {{ selectedStore ? (selectedStore.name || selectedStore.nama_store || String(selectedStore.id_store || selectedStore.id)) : 'Pilih Toko' }}
+            </span>
+            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showStoreDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <input type="text" :value="selectedStore ? '1' : ''" required class="sr-only" tabindex="-1" />
+
+          <div v-if="showStoreDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+            <div class="p-2 border-b border-slate-100">
+              <input
+                v-model="storeSearch"
+                type="text"
+                placeholder="Cari toko..."
+                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
+                @click.stop
+              />
+            </div>
+            <ul class="max-h-48 overflow-y-auto py-1">
+              <li v-if="filteredStores.length === 0" class="px-4 py-3 text-xs text-slate-400 text-center">
+                {{ stores.length === 0 ? 'Memuat data toko...' : 'Toko tidak ditemukan' }}
+              </li>
+              <li
+                v-for="store in filteredStores"
+                :key="store.id_store || store.id"
+                @click="selectedStore = store; showStoreDropdown = false; storeSearch = ''"
+                class="px-4 py-2 text-sm cursor-pointer transition-colors"
+                :class="(selectedStore?.id_store || selectedStore?.id) === (store.id_store || store.id) ? 'bg-[#4647AE]/10 text-[#4647AE] font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+              >
+                {{ store.name || store.nama_store || store.id_store || store.id }}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <!-- Department Input (Shown when a mode is selected for internal) -->
@@ -232,6 +277,7 @@
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getSurveyDetail, getProvinces, getRegencies } from '../../services/survey.service';
+import { inventoryService } from '../../services/inventoryService';
 
 const router = useRouter();
 const route = useRoute();
@@ -251,6 +297,13 @@ const provinceSearch = ref('');
 const regencySearch = ref('');
 const provinceRef = ref(null);
 const regencyRef = ref(null);
+
+// Store selection state (untuk external survey)
+const stores = ref([]);
+const selectedStore = ref(null);
+const storeSearch = ref('');
+const showStoreDropdown = ref(false);
+const storeRef = ref(null);
 
 // Searchable dropdown state
 const showDropdown = ref(false);
@@ -335,9 +388,19 @@ const filteredRegencies = computed(() => {
   return regencies.value.filter(r => r.name.toLowerCase().includes(q));
 });
 
+const filteredStores = computed(() => {
+  if (!storeSearch.value) return stores.value;
+  const q = storeSearch.value.toLowerCase();
+  return stores.value.filter(s =>
+    (s.name || s.nama_store || '').toLowerCase().includes(q) ||
+    String(s.id_store || s.id || '').toLowerCase().includes(q)
+  );
+});
+
 const toggleProvinceDropdown = () => {
   showProvinceDropdown.value = !showProvinceDropdown.value;
   showRegencyDropdown.value = false;
+  showStoreDropdown.value = false;
 };
 
 const toggleRegencyDropdown = () => {
@@ -392,6 +455,9 @@ const handleClickOutside = (e) => {
   if (regencyRef.value && !regencyRef.value.contains(e.target)) {
     showRegencyDropdown.value = false;
   }
+  if (storeRef.value && !storeRef.value.contains(e.target)) {
+    showStoreDropdown.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -423,6 +489,18 @@ onMounted(async () => {
         // Fetch provinces
         const provRes = await getProvinces();
         provinces.value = provRes.data;
+        // Fetch store list dari inventory
+        try {
+          stores.value = await inventoryService.getLocations();
+        } catch (err) {
+          console.error('Failed to fetch stores:', err);
+        }
+        // Pre-fill toko jika store_id sudah ada di URL (embedded dari QR code)
+        const storeIdFromUrl = route.query.store_id;
+        if (storeIdFromUrl) {
+          const found = stores.value.find(s => String(s.id_store || s.id) === String(storeIdFromUrl));
+          selectedStore.value = found || { id_store: storeIdFromUrl, name: storeIdFromUrl };
+        }
       }
     } catch (err) {
       console.error('Failed to fetch survey details:', err);
@@ -450,13 +528,20 @@ const startSurvey = () => {
   sessionStorage.setItem('survey_id', surveyId);
 
   if (surveyVisibility.value === 'external') {
+    if (!selectedStore.value) {
+      alert('Silakan pilih toko terlebih dahulu.');
+      return;
+    }
     sessionStorage.setItem('respondent_province', selectedProvince.value ? selectedProvince.value.name : '');
     sessionStorage.setItem('respondent_regency', selectedRegency.value ? selectedRegency.value.name : '');
     sessionStorage.setItem('respondent_dept', 'EXTERNAL');
+    sessionStorage.setItem('id_store', String(selectedStore.value.id_store || selectedStore.value.id || ''));
+    sessionStorage.setItem('survey_visibility', 'external');
   } else {
     sessionStorage.setItem('respondent_dept', department.value);
     sessionStorage.setItem('respondent_province', '');
     sessionStorage.setItem('respondent_regency', '');
+    sessionStorage.setItem('survey_visibility', 'internal');
   }
   
   // Transition to survey questions page with survey_id query param

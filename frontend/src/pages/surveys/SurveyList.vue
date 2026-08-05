@@ -425,6 +425,23 @@
                     </svg>
                   </button>
 
+                  <!-- Download Store QR Codes Excel (Only for external surveys) -->
+                  <button 
+                    v-if="survey.visibility === 'external'"
+                    @click="downloadStoreQRCodes(survey)"
+                    :disabled="isDownloadingQrs[survey.id]"
+                    class="p-2.5 rounded-xl border border-slate-200/80 bg-slate-50/80 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 transition-all shadow-xs flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    :title="isDownloadingQrs[survey.id] ? 'Generating Excel...' : 'Download Store QR Codes (Excel)'"
+                  >
+                    <svg v-if="isDownloadingQrs[survey.id]" class="animate-spin h-4.5 w-4.5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m0 4v.01m0 4v.01M4 12h1m4 0h.01m4 0h.01m-9-8h3.01M4 7h3.01M4 4h3.01M17 4h3.01M17 7h3.01M17 17h3.01M17 20h3.01M4 17h3.01M4 20h3.01" />
+                    </svg>
+                  </button>
+
 
 
                   <!-- Toggle activation -->
@@ -476,6 +493,9 @@ import { getSurveys, createSurvey, deleteSurvey as deleteSurveyApi } from '../..
 import { useSearchStore } from '../../stores/search';
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import QRCode from 'qrcode';
+import { inventoryService } from '../../services/inventoryService';
 
 const surveys = ref([]);
 const searchQuery = ref('');
@@ -483,6 +503,7 @@ const statusFilter = ref('all');
 const sortBy = ref('newest');
 const searchStore = useSearchStore();
 const copiedSurveyId = ref(null);
+const isDownloadingQrs = ref({});
 
 const copySurveyLink = (surveyId) => {
   const link = `${window.location.origin}/survey/identity?survey_id=${surveyId}`;
@@ -522,6 +543,110 @@ const fallbackCopyText = (text, surveyId) => {
     console.error('Fallback copy failed:', err);
   }
   document.body.removeChild(textArea);
+};
+
+const downloadStoreQRCodes = async (survey) => {
+  if (isDownloadingQrs.value[survey.id]) return;
+  isDownloadingQrs.value[survey.id] = true;
+  try {
+    const stores = await inventoryService.getLocations();
+    if (!stores || stores.length === 0) {
+      alert("Tidak ada data toko yang ditemukan.");
+      return;
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Store QRs');
+
+    worksheet.columns = [
+      { header: 'No', key: 'no', width: 8 },
+      { header: 'ID Toko', key: 'id_store', width: 20 },
+      { header: 'Nama Toko', key: 'name_store', width: 35 },
+      { header: 'Link Kuesioner', key: 'qr_link', width: 70 },
+      { header: 'QR Code (PNG)', key: 'qr_image', width: 30 }
+    ];
+
+    worksheet.getRow(1).height = 30;
+    worksheet.getRow(1).font = { name: 'Arial', family: 4, size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF4647AE' }
+    };
+    worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+    let rowIndex = 2;
+    for (const store of stores) {
+      const storeId = store.id_store || store.id;
+      const storeName = store.name || store.nama_store || 'Unknown Store';
+      const surveyUrl = `${window.location.origin}/survey/identity?survey_id=${survey.id}&store_id=${storeId}`;
+      
+      const qrBase64 = await QRCode.toDataURL(surveyUrl, {
+        width: 180,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+
+      const row = worksheet.addRow({
+        no: rowIndex - 1,
+        id_store: storeId,
+        name_store: storeName,
+        qr_link: surveyUrl
+      });
+
+      row.alignment = { vertical: 'middle', horizontal: 'left' };
+      row.getCell('no').alignment = { vertical: 'middle', horizontal: 'center' };
+      row.getCell('id_store').alignment = { vertical: 'middle', horizontal: 'center' };
+      
+      row.height = 140;
+
+      const imageId = workbook.addImage({
+        base64: qrBase64,
+        extension: 'png'
+      });
+
+      worksheet.addImage(imageId, {
+        tl: { col: 4, row: rowIndex - 1 },
+        ext: { width: 180, height: 180 },
+        editAs: 'oneCell'
+      });
+
+      rowIndex++;
+    }
+
+    worksheet.eachRow({ includeEmpty: false }, (row, rowNum) => {
+      if (rowNum > 1) {
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+          };
+        });
+      }
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const downloadUrl = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `QR_Codes_${survey.title.replace(/[^a-z0-9]/gi, '_')}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (error) {
+    console.error('Failed to generate store QR codes:', error);
+    alert('Gagal mengunduh QR Code Toko.');
+  } finally {
+    isDownloadingQrs.value[survey.id] = false;
+  }
 };
 
 // Wizard Form State
