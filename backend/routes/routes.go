@@ -34,6 +34,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 		// Public Survey Submit (QR Code - Customer)
 		api.POST("/surveys/submit", controllers.SubmitSurveyResponse)
+		api.GET("/LIT/store", controllers.GetStores)
 
 		// Regions
 		api.GET("/regions/provinces", controllers.GetProvinces)
