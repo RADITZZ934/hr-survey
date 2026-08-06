@@ -547,8 +547,9 @@ const startSurvey = () => {
     }
     sessionStorage.setItem('respondent_province', selectedProvince.value ? selectedProvince.value.name : '');
     sessionStorage.setItem('respondent_regency', selectedRegency.value ? selectedRegency.value.name : '');
-    sessionStorage.setItem('respondent_dept', 'EXTERNAL');
-    sessionStorage.setItem('id_store', String(selectedStore.value.name || selectedStore.value.id_store || selectedStore.value.id || ''));
+    const storeName = String(selectedStore.value.name || selectedStore.value.id_store || selectedStore.value.id || '');
+    sessionStorage.setItem('respondent_dept', storeName);
+    sessionStorage.setItem('id_store', storeName);
     sessionStorage.setItem('survey_visibility', 'external');
   } else {
     sessionStorage.setItem('respondent_dept', department.value);
