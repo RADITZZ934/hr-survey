@@ -76,30 +76,24 @@
         <!-- Province Dropdown -->
         <div class="space-y-1.5 relative z-20" ref="provinceRef">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Provinsi</label>
-          <button
-            type="button"
-            @click="toggleProvinceDropdown"
-            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white"
-            :class="showProvinceDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
-          >
-            <span :class="selectedProvince ? 'text-slate-700' : 'text-slate-400'">{{ selectedProvince?.name || 'Pilih Provinsi' }}</span>
-            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showProvinceDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <input type="text" :value="selectedProvince?.name || ''" required class="sr-only" tabindex="-1" />
+          <div class="relative">
+            <input
+              type="text"
+              v-model="provinceSearch"
+              @focus="openProvinceDropdown"
+              placeholder="Pilih Provinsi"
+              required
+              class="w-full border rounded-xl pl-4 pr-10 py-2.5 text-sm transition-colors bg-white focus:outline-none focus:border-[#4647AE] focus:ring-1 focus:ring-[#4647AE]/20"
+              :class="showProvinceDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+            />
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showProvinceDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
           
           <div v-if="showProvinceDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
-            <!-- Search Province -->
-            <div class="p-2 border-b border-slate-100">
-              <input
-                v-model="provinceSearch"
-                type="text"
-                placeholder="Cari provinsi..."
-                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
-                @click.stop
-              />
-            </div>
             <ul class="max-h-48 overflow-y-auto py-1">
               <li
                 v-for="prov in filteredProvinces"
@@ -110,6 +104,9 @@
               >
                 {{ prov.name }}
               </li>
+              <li v-if="filteredProvinces.length === 0" class="px-4 py-3 text-xs text-slate-400 text-center">
+                Provinsi tidak ditemukan
+              </li>
             </ul>
           </div>
         </div>
@@ -117,31 +114,25 @@
         <!-- Regency Dropdown -->
         <div class="space-y-1.5 relative z-10" ref="regencyRef">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Kabupaten / Kota</label>
-          <button
-            type="button"
-            @click="toggleRegencyDropdown"
-            :disabled="!selectedProvince"
-            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
-            :class="showRegencyDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
-          >
-            <span :class="selectedRegency ? 'text-slate-700' : 'text-slate-400'">{{ selectedRegency?.name || 'Pilih Kabupaten/Kota' }}</span>
-            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showRegencyDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <input type="text" :value="selectedRegency?.name || ''" required class="sr-only" tabindex="-1" />
+          <div class="relative">
+            <input
+              type="text"
+              v-model="regencySearch"
+              @focus="openRegencyDropdown"
+              :disabled="!selectedProvince"
+              placeholder="Pilih Kabupaten/Kota"
+              required
+              class="w-full border rounded-xl pl-4 pr-10 py-2.5 text-sm transition-colors bg-white disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed focus:outline-none focus:border-[#4647AE] focus:ring-1 focus:ring-[#4647AE]/20"
+              :class="showRegencyDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+            />
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showRegencyDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
           
           <div v-if="showRegencyDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
-            <!-- Search Regency -->
-            <div class="p-2 border-b border-slate-100">
-              <input
-                v-model="regencySearch"
-                type="text"
-                placeholder="Cari kabupaten/kota..."
-                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
-                @click.stop
-              />
-            </div>
             <ul class="max-h-48 overflow-y-auto py-1">
               <li
                 v-for="reg in filteredRegencies"
@@ -152,6 +143,9 @@
               >
                 {{ reg.name }}
               </li>
+              <li v-if="filteredRegencies.length === 0" class="px-4 py-3 text-xs text-slate-400 text-center">
+                Kabupaten/Kota tidak ditemukan
+              </li>
             </ul>
           </div>
         </div>
@@ -159,35 +153,28 @@
         <!-- Store / Toko Dropdown (External Survey) -->
         <div class="space-y-1.5 relative" ref="storeRef">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Toko / Lokasi Survey</label>
-          <button
-            type="button"
-            :disabled="hasStoreFromUrl"
-            @click="showStoreDropdown = !showStoreDropdown"
-            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors"
-            :class="[
-              showStoreDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200',
-              hasStoreFromUrl ? 'bg-slate-50 text-slate-500 cursor-not-allowed border-slate-200' : 'bg-white'
-            ]"
-          >
-            <span :class="selectedStore ? 'text-slate-700 font-medium' : 'text-slate-400'">
-              {{ selectedStore ? (selectedStore.name || selectedStore.nama_store || String(selectedStore.id_store || selectedStore.id)) : 'Pilih Toko' }}
-            </span>
-            <svg v-if="!hasStoreFromUrl" class="w-4 h-4 text-slate-400 transition-transform" :class="showStoreDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <input type="text" :value="selectedStore ? '1' : ''" required class="sr-only" tabindex="-1" />
+          <div class="relative">
+            <input
+              type="text"
+              v-model="storeSearch"
+              @focus="openStoreDropdown"
+              :disabled="hasStoreFromUrl"
+              placeholder="Pilih Toko"
+              required
+              class="w-full border rounded-xl pl-4 pr-10 py-2.5 text-sm transition-colors disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed focus:outline-none focus:border-[#4647AE] focus:ring-1 focus:ring-[#4647AE]/20"
+              :class="[
+                showStoreDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200',
+                hasStoreFromUrl ? 'bg-slate-50 text-slate-500 cursor-not-allowed border-slate-200' : 'bg-white'
+              ]"
+            />
+            <div v-if="!hasStoreFromUrl" class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showStoreDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
 
           <div v-if="showStoreDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
-            <div class="p-2 border-b border-slate-100">
-              <input
-                v-model="storeSearch"
-                type="text"
-                placeholder="Cari toko..."
-                class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
-                @click.stop
-              />
-            </div>
             <ul class="max-h-48 overflow-y-auto py-1">
               <li v-if="filteredStores.length === 0" class="px-4 py-3 text-xs text-slate-400 text-center">
                 {{ stores.length === 0 ? 'Memuat data toko...' : 'Toko tidak ditemukan' }}
@@ -195,7 +182,7 @@
               <li
                 v-for="store in filteredStores"
                 :key="store.id_store || store.id"
-                @click="selectedStore = store; showStoreDropdown = false; storeSearch = ''"
+                @click="selectStore(store)"
                 class="px-4 py-2 text-sm cursor-pointer transition-colors"
                 :class="(selectedStore?.id_store || selectedStore?.id) === (store.id_store || store.id) ? 'bg-[#4647AE]/10 text-[#4647AE] font-semibold' : 'text-slate-700 hover:bg-slate-50'"
               >
@@ -210,39 +197,24 @@
       <div v-if="selectedMode && surveyVisibility === 'internal'" class="space-y-1.5 animate-fade-in relative z-20">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Departemen / Divisi</label>
         <div class="relative" ref="dropdownRef">
-          <!-- Dropdown Trigger -->
-          <button
-            type="button"
-            @click="showDropdown = !showDropdown"
-            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white"
-            :class="showDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
-          >
-            <span :class="department ? 'text-slate-700' : 'text-slate-400'">{{ department || 'Pilih departemen Anda' }}</span>
-            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <!-- Hidden required input for form validation -->
-          <input type="text" :value="department" required class="sr-only" tabindex="-1" />
+          <div class="relative">
+            <input
+              type="text"
+              v-model="deptSearch"
+              @focus="showDropdown = true"
+              placeholder="Pilih departemen Anda"
+              required
+              class="w-full border rounded-xl pl-4 pr-10 py-2.5 text-sm transition-colors bg-white focus:outline-none focus:border-[#4647AE] focus:ring-1 focus:ring-[#4647AE]/20"
+              :class="showDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+            />
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
           <!-- Dropdown Panel -->
           <div v-if="showDropdown" class="absolute z-50 mt-1.5 w-full bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
-            <!-- Search Input -->
-            <div class="p-2 border-b border-slate-100">
-              <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  ref="searchInputRef"
-                  v-model="deptSearch"
-                  type="text"
-                  placeholder="Cari departemen..."
-                  class="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#4647AE] transition-colors"
-                  @click.stop
-                />
-              </div>
-            </div>
-            <!-- Options List -->
             <ul class="max-h-48 overflow-y-auto py-1">
               <li
                 v-for="dept in filteredDepartments"
@@ -375,19 +347,25 @@ const departments = [
 ];
 
 const filteredDepartments = computed(() => {
-  if (!deptSearch.value) return departments;
+  if (!deptSearch.value || (department.value && deptSearch.value === department.value)) {
+    return departments;
+  }
   const q = deptSearch.value.toLowerCase();
   return departments.filter(d => d.toLowerCase().includes(q));
 });
 
 const filteredProvinces = computed(() => {
-  if (!provinceSearch.value) return provinces.value;
+  if (!provinceSearch.value || (selectedProvince.value && provinceSearch.value === selectedProvince.value.name)) {
+    return provinces.value;
+  }
   const q = provinceSearch.value.toLowerCase();
   return provinces.value.filter(p => p.name.toLowerCase().includes(q));
 });
 
 const filteredRegencies = computed(() => {
-  if (!regencySearch.value) return regencies.value;
+  if (!regencySearch.value || (selectedRegency.value && regencySearch.value === selectedRegency.value.name)) {
+    return regencies.value;
+  }
   const q = regencySearch.value.toLowerCase();
   return regencies.value.filter(r => r.name.toLowerCase().includes(q));
 });
@@ -398,7 +376,12 @@ const filteredStores = computed(() => {
   if (hasStoreFromUrl.value && selectedStore.value) {
     return [selectedStore.value];
   }
-  if (!storeSearch.value) return stores.value;
+  const selectedName = selectedStore.value 
+    ? (selectedStore.value.name || selectedStore.value.nama_store || String(selectedStore.value.id_store || selectedStore.value.id))
+    : '';
+  if (!storeSearch.value || (selectedStore.value && storeSearch.value === selectedName)) {
+    return stores.value;
+  }
   const q = storeSearch.value.toLowerCase();
   return stores.value.filter(s =>
     (s.name || s.nama_store || '').toLowerCase().includes(q) ||
@@ -406,23 +389,30 @@ const filteredStores = computed(() => {
   );
 });
 
-const toggleProvinceDropdown = () => {
-  showProvinceDropdown.value = !showProvinceDropdown.value;
+const openProvinceDropdown = () => {
+  showProvinceDropdown.value = true;
   showRegencyDropdown.value = false;
   showStoreDropdown.value = false;
 };
 
-const toggleRegencyDropdown = () => {
+const openRegencyDropdown = () => {
   if (!selectedProvince.value) return;
-  showRegencyDropdown.value = !showRegencyDropdown.value;
+  showRegencyDropdown.value = true;
   showProvinceDropdown.value = false;
+  showStoreDropdown.value = false;
+};
+
+const openStoreDropdown = () => {
+  if (hasStoreFromUrl.value) return;
+  showStoreDropdown.value = true;
+  showProvinceDropdown.value = false;
+  showRegencyDropdown.value = false;
 };
 
 const selectProvince = async (prov) => {
   selectedProvince.value = prov;
   selectedRegency.value = null;
   showProvinceDropdown.value = false;
-  provinceSearch.value = '';
   try {
     const res = await getRegencies(prov.id);
     regencies.value = res.data;
@@ -434,38 +424,56 @@ const selectProvince = async (prov) => {
 const selectRegency = (reg) => {
   selectedRegency.value = reg;
   showRegencyDropdown.value = false;
-  regencySearch.value = '';
+};
+
+const selectStore = (store) => {
+  selectedStore.value = store;
+  showStoreDropdown.value = false;
 };
 
 const selectDepartment = (dept) => {
   department.value = dept;
   showDropdown.value = false;
-  deptSearch.value = '';
 };
 
-// Auto-focus search input when dropdown opens
-watch(showDropdown, async (val) => {
-  if (val) {
-    await nextTick();
-    searchInputRef.value?.focus();
-  } else {
-    deptSearch.value = '';
-  }
-});
+// Sync watchers to keep search values matched with selections
+watch(selectedProvince, (newVal) => {
+  provinceSearch.value = newVal ? newVal.name : '';
+}, { immediate: true });
+
+watch(selectedRegency, (newVal) => {
+  regencySearch.value = newVal ? newVal.name : '';
+}, { immediate: true });
+
+watch(selectedStore, (newVal) => {
+  storeSearch.value = newVal 
+    ? (newVal.name || newVal.nama_store || String(newVal.id_store || newVal.id)) 
+    : '';
+}, { immediate: true });
+
+watch(department, (newVal) => {
+  deptSearch.value = newVal || '';
+}, { immediate: true });
 
 // Close dropdown on outside click
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     showDropdown.value = false;
+    deptSearch.value = department.value || '';
   }
   if (provinceRef.value && !provinceRef.value.contains(e.target)) {
     showProvinceDropdown.value = false;
+    provinceSearch.value = selectedProvince.value ? selectedProvince.value.name : '';
   }
   if (regencyRef.value && !regencyRef.value.contains(e.target)) {
     showRegencyDropdown.value = false;
+    regencySearch.value = selectedRegency.value ? selectedRegency.value.name : '';
   }
   if (storeRef.value && !storeRef.value.contains(e.target)) {
     showStoreDropdown.value = false;
+    storeSearch.value = selectedStore.value 
+      ? (selectedStore.value.name || selectedStore.value.nama_store || String(selectedStore.value.id_store || selectedStore.value.id)) 
+      : '';
   }
 };
 
