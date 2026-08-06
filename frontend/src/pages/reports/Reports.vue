@@ -83,7 +83,7 @@
                 <input 
                   v-model="searchQuery"
                   type="text" 
-                  placeholder="Cari nama..." 
+                  placeholder="Cari nama atau toko..." 
                   class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
               </div>
@@ -665,7 +665,8 @@ const exportToExcel = async () => {
 
     if (query) {
       list = list.filter(r => 
-        (r.name || '').toLowerCase().includes(query)
+        (r.name || '').toLowerCase().includes(query) ||
+        (r.department || '').toLowerCase().includes(query)
       );
     }
 
@@ -748,7 +749,8 @@ const filteredRespondents = computed(() => {
 
   if (!query) return list;
   return list.filter(res => 
-    (res.name || '').toLowerCase().includes(query)
+    (res.name || '').toLowerCase().includes(query) ||
+    (res.department || '').toLowerCase().includes(query)
   );
 });
 
