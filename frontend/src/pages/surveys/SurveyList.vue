@@ -484,6 +484,42 @@
         </table>
       </div>
     </div>
+    <!-- Beautiful Confirmation Modal -->
+    <div v-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 no-print">
+      <!-- Backdrop overlay -->
+      <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity animate-fade-in" @click="closeConfirmModal"></div>
+      
+      <!-- Modal Content -->
+      <div class="relative bg-white rounded-3xl border border-slate-100/80 shadow-xl max-w-sm w-full p-6 text-center z-10 space-y-4 animate-fade-in">
+        <!-- Icon -->
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-50 text-amber-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        
+        <div class="space-y-1.5">
+          <h3 class="text-base font-bold text-slate-800 tracking-tight">{{ confirmTitle }}</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">{{ confirmMessage }}</p>
+        </div>
+        
+        <div class="flex items-center gap-3 pt-2">
+          <button 
+            @click="closeConfirmModal" 
+            class="flex-1 px-4 py-2 border border-slate-200 text-xs font-bold text-slate-500 rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            Batal
+          </button>
+          <button 
+            @click="executeConfirmAction" 
+            class="flex-1 px-4 py-2 text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+            :class="confirmBtnClass"
+          >
+            Ya, Lanjutkan
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -910,20 +946,67 @@ const submitSurvey = async () => {
   }
 };
 
-const toggleStatus = (survey) => {
-  survey.status = survey.status === 'active' ? 'closed' : 'active';
+// Confirmation Modal State
+const showConfirmModal = ref(false);
+const confirmTitle = ref('');
+const confirmMessage = ref('');
+const confirmActionType = ref('danger');
+let confirmActionCallback = null;
+
+const triggerConfirm = (title, message, type, callback) => {
+  confirmTitle.value = title;
+  confirmMessage.value = message;
+  confirmActionType.value = type;
+  confirmActionCallback = callback;
+  showConfirmModal.value = true;
 };
 
-const deleteSurvey = async (id) => {
-  if (confirm('Are you sure you want to delete this survey?')) {
-    try {
-      await deleteSurveyApi(id);
-      surveys.value = surveys.value.filter(s => s.id !== id);
-    } catch (error) {
-      console.error('Failed to delete survey:', error);
-      alert('Gagal menghapus survey dari database.');
-    }
+const closeConfirmModal = () => {
+  showConfirmModal.value = false;
+  confirmActionCallback = null;
+};
+
+const executeConfirmAction = () => {
+  if (confirmActionCallback) {
+    confirmActionCallback();
   }
+  closeConfirmModal();
+};
+
+const confirmBtnClass = computed(() => {
+  if (confirmActionType.value === 'danger') return 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800';
+  if (confirmActionType.value === 'warning') return 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700';
+  return 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800';
+});
+
+const toggleStatus = (survey) => {
+  const isCurrentlyActive = survey.status === 'active';
+  const actionText = isCurrentlyActive ? 'menonaktifkan (pause)' : 'mengaktifkan kembali';
+  triggerConfirm(
+    isCurrentlyActive ? 'Pause Survey' : 'Aktifkan Survey',
+    `Apakah Anda yakin ingin ${actionText} survey "${survey.title}"?`,
+    isCurrentlyActive ? 'warning' : 'info',
+    () => {
+      survey.status = isCurrentlyActive ? 'closed' : 'active';
+    }
+  );
+};
+
+const deleteSurvey = (id) => {
+  triggerConfirm(
+    'Hapus Survey',
+    'Apakah Anda yakin ingin menghapus survey ini? Seluruh data tanggapan responden terkait juga akan terhapus secara permanen dari database.',
+    'danger',
+    async () => {
+      try {
+        await deleteSurveyApi(id);
+        surveys.value = surveys.value.filter(s => s.id !== id);
+      } catch (error) {
+        console.error('Failed to delete survey:', error);
+        alert('Gagal menghapus survey dari database.');
+      }
+    }
+  );
 };
 
 const formatDate = (dateStr) => {
