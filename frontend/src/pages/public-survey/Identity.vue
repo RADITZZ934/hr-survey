@@ -161,14 +161,18 @@
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Toko / Lokasi Survey</label>
           <button
             type="button"
+            :disabled="hasStoreFromUrl"
             @click="showStoreDropdown = !showStoreDropdown"
-            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors bg-white"
-            :class="showStoreDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200'"
+            class="w-full border rounded-xl px-4 py-2.5 text-sm text-left flex items-center justify-between transition-colors"
+            :class="[
+              showStoreDropdown ? 'border-[#4647AE] ring-1 ring-[#4647AE]/20' : 'border-slate-200',
+              hasStoreFromUrl ? 'bg-slate-50 text-slate-500 cursor-not-allowed border-slate-200' : 'bg-white'
+            ]"
           >
-            <span :class="selectedStore ? 'text-slate-700' : 'text-slate-400'">
+            <span :class="selectedStore ? 'text-slate-700 font-medium' : 'text-slate-400'">
               {{ selectedStore ? (selectedStore.name || selectedStore.nama_store || String(selectedStore.id_store || selectedStore.id)) : 'Pilih Toko' }}
             </span>
-            <svg class="w-4 h-4 text-slate-400 transition-transform" :class="showStoreDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg v-if="!hasStoreFromUrl" class="w-4 h-4 text-slate-400 transition-transform" :class="showStoreDropdown ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -388,7 +392,12 @@ const filteredRegencies = computed(() => {
   return regencies.value.filter(r => r.name.toLowerCase().includes(q));
 });
 
+const hasStoreFromUrl = computed(() => !!route.query.store_id);
+
 const filteredStores = computed(() => {
+  if (hasStoreFromUrl.value && selectedStore.value) {
+    return [selectedStore.value];
+  }
   if (!storeSearch.value) return stores.value;
   const q = storeSearch.value.toLowerCase();
   return stores.value.filter(s =>
