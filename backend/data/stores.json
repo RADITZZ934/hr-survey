@@ -1,0 +1,2256 @@
+[
+  {
+    "id": 246,
+    "kode": "LB00246",
+    "name": "ANDONG BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 14,
+    "kode": "LB00014",
+    "name": "BABAT 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 19,
+    "kode": "LB00019",
+    "name": "BABAT 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 30,
+    "kode": "LB00030",
+    "name": "BABAT 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 49,
+    "kode": "LB00049",
+    "name": "BABAT - ROWOREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 260,
+    "kode": "LB00260",
+    "name": "BAKI SUKOHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 89,
+    "kode": "LB00089",
+    "name": "BALENREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 110,
+    "kode": "LB00110",
+    "name": "BALONGPANGGANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 38,
+    "kode": "LB00038",
+    "name": "BANGILAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 149,
+    "kode": "LB00149",
+    "name": "BANGILAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 132,
+    "kode": "LB00132",
+    "name": "BANGKLE - BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 254,
+    "kode": "LB00254",
+    "name": "BANJAREJO - BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 5,
+    "kode": "LB00005",
+    "name": "BANJARSARI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 73,
+    "kode": "LB00073",
+    "name": "BARAT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 297,
+    "kode": "LB00297",
+    "name": "BATU JAMUS",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 15,
+    "kode": "LB00015",
+    "name": "BAURENO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 115,
+    "kode": "BZ00115",
+    "name": "BAZZAR BABAT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 61,
+    "kode": "BZ00061",
+    "name": "BAZZAR BANGILAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 176,
+    "kode": "LB00176",
+    "name": "BAZZAR BARAT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 195,
+    "kode": "BZ00195",
+    "name": "BAZZAR BAURENO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 205,
+    "kode": "BZ00205",
+    "name": "BAZZAR BOJONEGORO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 216,
+    "kode": "BZ00216",
+    "name": "BAZZAR CEPU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 288,
+    "kode": "BZ00288",
+    "name": "BAZZAR CEPU 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 145,
+    "kode": "ST00145",
+    "name": "BAZZAR DURIAN BANJARSARI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 124,
+    "kode": "ST00124",
+    "name": "BAZZAR DURIAN CEPU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 123,
+    "kode": "ST00123",
+    "name": "BAZZAR DURIAN NGUMPAKDALEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 125,
+    "kode": "ST00125",
+    "name": "BAZZAR DURIAN PADANGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 126,
+    "kode": "ST00126",
+    "name": "BAZZAR DURIAN PURWODADI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 122,
+    "kode": "ST00122",
+    "name": "BAZZAR DURIAN SUKOWATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 137,
+    "kode": "ST00137",
+    "name": "BAZZAR DURIAN SUMBERJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 244,
+    "kode": "BZ00244",
+    "name": "BAZZAR GLODOG MAGETAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 201,
+    "kode": "BZ00201",
+    "name": "BAZZAR GUBUG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 56,
+    "kode": "BZ00056",
+    "name": "BAZZAR JATIROGO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 104,
+    "kode": "BZ00104",
+    "name": "BAZZAR JEPON",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 84,
+    "kode": "BZ00084",
+    "name": "BAZZAR JOGOROGO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 164,
+    "kode": "BZ00164",
+    "name": "BAZZAR JOGOROTO - JOMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 253,
+    "kode": "BZ00253",
+    "name": "BAZZAR JUWANA - PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 85,
+    "kode": "BZ00085",
+    "name": "BAZZAR KALITIDU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 256,
+    "kode": "BZ00256",
+    "name": "BAZZAR KASIMAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 232,
+    "kode": "BZ00232",
+    "name": "BAZZAR KEDUNGGALAR",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 153,
+    "kode": "LB00153",
+    "name": "BAZZAR KEDUNGTUBAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 231,
+    "kode": "BZ00231",
+    "name": "BAZZAR KEPOHBARU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 281,
+    "kode": "BZ00281",
+    "name": "BAZZAR KERTOSONO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 150,
+    "kode": "BZ00150",
+    "name": "BAZZAR KUNDURAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 116,
+    "kode": "BZ00116",
+    "name": "BAZZAR KUWU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 177,
+    "kode": "BZ00177",
+    "name": "BAZZAR MALO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 217,
+    "kode": "BZ00217",
+    "name": "BAZZAR MBARU PADANGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 196,
+    "kode": "BZ00196",
+    "name": "BAZZAR MENDEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 72,
+    "kode": "BZ00072",
+    "name": "BAZZAR NEXT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 255,
+    "kode": "BZ00255",
+    "name": "BAZZAR NGAGEL PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 215,
+    "kode": "BZ00215",
+    "name": "BAZZAR NGAWEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 63,
+    "kode": "BZ00063",
+    "name": "BAZZAR NGAWI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 317,
+    "kode": "BZ00317",
+    "name": "BAZZAR PADANGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 64,
+    "kode": "BZ00064",
+    "name": "BAZZAR PARON",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 229,
+    "kode": "BZ00229",
+    "name": "BAZZAR PETERONGAN - JOMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 109,
+    "kode": "BZ00109",
+    "name": "BAZZAR PLUMPANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 209,
+    "kode": "BZ00209",
+    "name": "BAZZAR PONCO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 107,
+    "kode": "BZ00107",
+    "name": "BAZZAR PURWODADI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 162,
+    "kode": "BZ00162",
+    "name": "BAZZAR RANDUBLATUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 236,
+    "kode": "BZ00236",
+    "name": "BAZZAR REMBANG KOTA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 163,
+    "kode": "BZ00163",
+    "name": "BAZZAR SELOREJO - JOMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 227,
+    "kode": "BZ00227",
+    "name": "BAZZAR SENORI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 274,
+    "kode": "BZ00274",
+    "name": "BAZZAR SOKO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 95,
+    "kode": "BZ00095",
+    "name": "BAZZAR SUMBERJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 8,
+    "kode": "BZ00008",
+    "name": "BAZZAR TOBO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 245,
+    "kode": "BZ00245",
+    "name": "BAZZAR WALIKUKUN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 161,
+    "kode": "BZ00161",
+    "name": "BAZZAR WIROSARI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 243,
+    "kode": "LB00243",
+    "name": "BERBEG NGANJUK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 139,
+    "kode": "LB00139",
+    "name": "BIHANDONO - BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 82,
+    "kode": "LB00082",
+    "name": "BLIMBING",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 46,
+    "kode": "LB00046",
+    "name": "BLORA 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 47,
+    "kode": "LB00047",
+    "name": "BLORA 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 68,
+    "kode": "BZ00068",
+    "name": "BLORA 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 50,
+    "kode": "LB00050",
+    "name": "BLORA 5",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 51,
+    "kode": "LB00051",
+    "name": "BLORA 6",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 103,
+    "kode": "BR00103",
+    "name": "BRAMP KALITIDU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 20,
+    "kode": "LB00020",
+    "name": "BRAVO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 7,
+    "kode": "LB00007",
+    "name": "BRENGGOLO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 81,
+    "kode": "LB00081",
+    "name": "BRONDONG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 319,
+    "kode": "LB00319",
+    "name": "BUKAN NGAMPEL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 146,
+    "kode": "LB00146",
+    "name": "BULU BANCAR",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 214,
+    "kode": "LB00214",
+    "name": "BUNGAH GRESIK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 75,
+    "kode": "LB00075",
+    "name": "CARUBAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 10,
+    "kode": "LB00010",
+    "name": "CEPU 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 29,
+    "kode": "LB00029",
+    "name": "CEPU 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 34,
+    "kode": "LB00034",
+    "name": "CEPU 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 69,
+    "kode": "BZ00069",
+    "name": "CEPU-PEMUDA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 111,
+    "kode": "LB00111",
+    "name": "CERME",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 268,
+    "kode": "LB00268",
+    "name": "CERME-GRESIK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 322,
+    "kode": "LB00322",
+    "name": "CUPLIK SUKOHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 22,
+    "kode": "LB00022",
+    "name": "DANDER 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 43,
+    "kode": "LB00043",
+    "name": "DANDER 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 197,
+    "kode": "LB00197",
+    "name": "DEMPET-DEMAK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 306,
+    "kode": "LB00306",
+    "name": "DLANGGU MOJOKERTO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 128,
+    "kode": "LB00128",
+    "name": "DOLOPO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 113,
+    "kode": "LB00113",
+    "name": "DOPLANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 141,
+    "kode": "LB00141",
+    "name": "DUKUN - GRESIK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 37,
+    "kode": "LB00037",
+    "name": "DUMMY",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 179,
+    "kode": "LB00179",
+    "name": "GAJAHMADA TUBAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 13,
+    "kode": "LB00013",
+    "name": "GAMPENG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 188,
+    "kode": "LB00188",
+    "name": "GANDRIROJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 279,
+    "kode": "LB00279",
+    "name": "GEMOLONG 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 247,
+    "kode": "LB00247",
+    "name": "GEMOLONG SRAGEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 108,
+    "kode": "LB00108",
+    "name": "GERSIK DUMMY",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 140,
+    "kode": "LB00140",
+    "name": "GESIKHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 332,
+    "kode": "LB00332",
+    "name": "GODEAN GAMPING",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 135,
+    "kode": "LB00135",
+    "name": "GODONG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 312,
+    "kode": "LB00312",
+    "name": "GONDANG MOJOKERTO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 284,
+    "kode": "LB00284",
+    "name": "GONDANG SRAGEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 86,
+    "kode": "LB00086",
+    "name": "GRESIK - TEBALOAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 202,
+    "kode": "LB00202",
+    "name": "GUNTUR-DEMAK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 336,
+    "kode": "ST00336",
+    "name": "HRD",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 334,
+    "kode": "LB00334",
+    "name": "IMOGIRI BANTUL BARAT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 330,
+    "kode": "LB00330",
+    "name": "IMOGIRI BANTUL TIMUR",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 237,
+    "kode": "LB00237",
+    "name": "JAKENAN PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 207,
+    "kode": "LB00207",
+    "name": "JAKEN - PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 293,
+    "kode": "LB00293",
+    "name": "JAMBANGAN KARANGANYAR",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 266,
+    "kode": "LB00266",
+    "name": "JATINOM KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 33,
+    "kode": "LB00033",
+    "name": "JATIROGO 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 335,
+    "kode": "LB00335",
+    "name": "JENANGAN PONOROGO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 93,
+    "kode": "LB00093",
+    "name": "JENU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 52,
+    "kode": "LB00052",
+    "name": "JEPON",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 74,
+    "kode": "LB00074",
+    "name": "JIWAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 316,
+    "kode": "LB00316",
+    "name": "JOMBANG KOTA 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 206,
+    "kode": "LB00206",
+    "name": "JUWANA - PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 295,
+    "kode": "LB00295",
+    "name": "JUWIRING",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 159,
+    "kode": "LB00159",
+    "name": "KABUH",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 28,
+    "kode": "LB00028",
+    "name": "KABUNAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 198,
+    "kode": "LB00198",
+    "name": "KADILANGU-DEMAK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 296,
+    "kode": "LB00296",
+    "name": "KALIOSO - KARANGANYAR",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 25,
+    "kode": "LB00025",
+    "name": "KALIREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 204,
+    "kode": "LB00204",
+    "name": "KALIREJO - KUDUS",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 27,
+    "kode": "LB00027",
+    "name": "KALITIDU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 221,
+    "kode": "LB00221",
+    "name": "KARABAN PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 263,
+    "kode": "LB00263",
+    "name": "KARANGGEDE BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 156,
+    "kode": "LB00156",
+    "name": "KARANGJATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 175,
+    "kode": "LB00175",
+    "name": "KAWEDANAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 222,
+    "kode": "LB00222",
+    "name": "KAYEN PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 136,
+    "kode": "LB00136",
+    "name": "KEBONAGUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 40,
+    "kode": "LB00040",
+    "name": "KEDUNGADEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 48,
+    "kode": "LB00048",
+    "name": "KEDUNGADEM 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 291,
+    "kode": "LB00291",
+    "name": "KEDUNGAN PEDAN KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 91,
+    "kode": "LB00091",
+    "name": "KEDUNGPRING",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 183,
+    "kode": "LB00183",
+    "name": "KEDUNGPRING 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 298,
+    "kode": "LB00298",
+    "name": "KELET JEPARA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 212,
+    "kode": "LB00212",
+    "name": "KEREK TUBAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 76,
+    "kode": "LB00076",
+    "name": "KERTOSONO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 193,
+    "kode": "LB00193",
+    "name": "KLAMBU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 147,
+    "kode": "LB00147",
+    "name": "KRADENAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 241,
+    "kode": "LB00241",
+    "name": "KRAGAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 173,
+    "kode": "LB00173",
+    "name": "KRAGAN - REMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 118,
+    "kode": "LB00118",
+    "name": "KUNDURAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 208,
+    "kode": "LB00208",
+    "name": "KUNIRAN - PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 151,
+    "kode": "LB00151",
+    "name": "KUWU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 320,
+    "kode": "LM00320",
+    "name": "LALA MIE CEPU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 289,
+    "kode": "LM00289",
+    "name": "LALA MIE KALITIDU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 331,
+    "kode": "LM00331",
+    "name": "LALA MIE PADANGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 311,
+    "kode": "LM00311",
+    "name": "LALA MIE RAJEKWESI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 294,
+    "kode": "LM00294",
+    "name": "LALA MIE SUKOWATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 79,
+    "kode": "LB00079",
+    "name": "LAMONGAN 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 80,
+    "kode": "LB00080",
+    "name": "LAMONGAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 121,
+    "kode": "LB00121",
+    "name": "LAMONGAN - KARANG GENENG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 87,
+    "kode": "LB00087",
+    "name": "LAMONGAN - SIDOHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 127,
+    "kode": "LB00127",
+    "name": "LAMONGAN SUGIO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 96,
+    "kode": "LB00096",
+    "name": "LAMONGAN - SUKODADI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 90,
+    "kode": "LB00090",
+    "name": "LAMONGAN-SUKOMULYO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 160,
+    "kode": "LB00160",
+    "name": "LAMONGAN - SUKOREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 299,
+    "kode": "LB00299",
+    "name": "LANDOH",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 172,
+    "kode": "LB00172",
+    "name": "LASEM - REMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 228,
+    "kode": "LB00228",
+    "name": "LASKAR BUAH GYM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 309,
+    "kode": "LB00309",
+    "name": "LASKAR BUAH STORE",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 203,
+    "kode": "LB00203",
+    "name": "LODAN WETAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 4,
+    "kode": "LB00004",
+    "name": "MADEAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 57,
+    "kode": "LB00057",
+    "name": "MADIUN 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 58,
+    "kode": "LB00058",
+    "name": "MADIUN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 239,
+    "kode": "LB00239",
+    "name": "MAGETAN 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 112,
+    "kode": "LB00112",
+    "name": "MANTUP",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 6,
+    "kode": "LB00006",
+    "name": "MAYANGREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 167,
+    "kode": "LB00167",
+    "name": "MEDANG - BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 114,
+    "kode": "LB00114",
+    "name": "MENDEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 242,
+    "kode": "LB00242",
+    "name": "MENGANTI 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 143,
+    "kode": "LB00143",
+    "name": "MENGANTI - GRESIK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 133,
+    "kode": "LB00133",
+    "name": "MLANGSEN - BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 304,
+    "kode": "LB00304",
+    "name": "MODO LAMONGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 259,
+    "kode": "LB00259",
+    "name": "MOJOLABAN SUKOHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 324,
+    "kode": "LB00324",
+    "name": "MOJOSARI MOJOKERTO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 265,
+    "kode": "LB00265",
+    "name": "MOJOSONGO BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 165,
+    "kode": "LB00165",
+    "name": "MONTONG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 327,
+    "kode": "LB00327",
+    "name": "MOYUDAN SLEMAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 333,
+    "kode": "LB00333",
+    "name": "NGADIROJO WONOGIRI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 272,
+    "kode": "LB00272",
+    "name": "NGAGLIK SLEMAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 185,
+    "kode": "LB00185",
+    "name": "NGAMBON",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 318,
+    "kode": "LB00318",
+    "name": "NGAMPEL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 59,
+    "kode": "LB00059",
+    "name": "NGANJUK 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 60,
+    "kode": "LB00060",
+    "name": "NGANJUK 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 144,
+    "kode": "LB00144",
+    "name": "NGANJUK 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 120,
+    "kode": "LB00120",
+    "name": "NGANJUK - GONDANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 186,
+    "kode": "LB00186",
+    "name": "NGASEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 55,
+    "kode": "LB00055",
+    "name": "NGAWEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 325,
+    "kode": "LB00325",
+    "name": "NGAWEN KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 11,
+    "kode": "LB00011",
+    "name": "NGAWI 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 258,
+    "kode": "LB00258",
+    "name": "NGEMPLAK BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 169,
+    "kode": "LB00169",
+    "name": "NGIMBANG - LAMONGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 35,
+    "kode": "LB00035",
+    "name": "NGRAHO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 282,
+    "kode": "LB00282",
+    "name": "NGRONGGOT NGANJUK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 2,
+    "kode": "LB00002",
+    "name": "NGUMPAK DALEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 257,
+    "kode": "LB00257",
+    "name": "NGUTER SUKOHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 155,
+    "kode": "LB00155",
+    "name": "No Name",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 67,
+    "kode": "BZ00067",
+    "name": "NO NAME",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 62,
+    "kode": "BZ00062",
+    "name": "NO NAME",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 287,
+    "kode": "LB00287",
+    "name": "PACE - NGANJUK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 166,
+    "kode": "LB00166",
+    "name": "PACIRAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 3,
+    "kode": "LB00003",
+    "name": "PACUL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 31,
+    "kode": "LB00031",
+    "name": "PADANGAN 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 39,
+    "kode": "LB00039",
+    "name": "PADANGAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 83,
+    "kode": "LB00083",
+    "name": "PALANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 154,
+    "kode": "LB00154",
+    "name": "PAMOTAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 23,
+    "kode": "LB00023",
+    "name": "PANGSUD",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 117,
+    "kode": "LB00117",
+    "name": "PANUNGGALAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 264,
+    "kode": "LB00264",
+    "name": "PEDAN KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 187,
+    "kode": "LB00187",
+    "name": "PENAWANGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 249,
+    "kode": "LB00249",
+    "name": "PILANG KENCENG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 270,
+    "kode": "LB00270",
+    "name": "PIYUNGAN BANTUL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 329,
+    "kode": "LB00329",
+    "name": "PLERET BANTUL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 170,
+    "kode": "LB00170",
+    "name": "PLUMPANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 77,
+    "kode": "LB00077",
+    "name": "PRAMBON 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 78,
+    "kode": "LB00078",
+    "name": "PRAMBON 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 210,
+    "kode": "LB00210",
+    "name": "PRAMBONTERGAYANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 16,
+    "kode": "LB00016",
+    "name": "PRAYUNGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 278,
+    "kode": "LB00278",
+    "name": "PUCAKWANGI PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 32,
+    "kode": "LB00032",
+    "name": "PUNGPUNGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 321,
+    "kode": "LB00321",
+    "name": "PURWANTORO WONOGIRI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 283,
+    "kode": "LB00283",
+    "name": "PURWOASRI SRAGEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 99,
+    "kode": "LB00099",
+    "name": "PURWODADI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 102,
+    "kode": "LB00102",
+    "name": "PURWODADI - DANYANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 97,
+    "kode": "LB00097",
+    "name": "PURWODADI - DEPOK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 98,
+    "kode": "LB00098",
+    "name": "PURWODADI - GETASREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 101,
+    "kode": "LB00101",
+    "name": "PURWODADI - JETIS",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 105,
+    "kode": "LB00105",
+    "name": "PURWODADI - TOROH",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 213,
+    "kode": "LB00213",
+    "name": "PURWOSARI - KUDUS",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 1,
+    "kode": "LB00001",
+    "name": "PUSAT",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 223,
+    "kode": "BZ00223",
+    "name": "PUSAT BZ",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 94,
+    "kode": "LB00094",
+    "name": "RANDUBLATUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 157,
+    "kode": "LB00157",
+    "name": "REJOSO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 158,
+    "kode": "LB00158",
+    "name": "REMBANG KOTA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 178,
+    "kode": "LB00178",
+    "name": "REMBANG KOTA 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 191,
+    "kode": "LB00191",
+    "name": "REMBANG KOTA 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 220,
+    "kode": "LB00220",
+    "name": "REMBANG KOTA 4",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 18,
+    "kode": "LB00018",
+    "name": "RENGEL 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 36,
+    "kode": "LB00036",
+    "name": "RENGEL 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 119,
+    "kode": "RR00119",
+    "name": "Rolla Sukowati",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 323,
+    "kode": "LB00323",
+    "name": "SABDODADI BANTUL",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 138,
+    "kode": "LB00138",
+    "name": "SANGGRAHAN GETASREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 192,
+    "kode": "LB00192",
+    "name": "SARANG - REMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 129,
+    "kode": "ST00129",
+    "name": "SATPASPUR 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 130,
+    "kode": "ST00130",
+    "name": "SATPASPUR 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 308,
+    "kode": "ST00308",
+    "name": "SATPASPUR 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 313,
+    "kode": "ST00313",
+    "name": "SATPASPUR 4",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 314,
+    "kode": "ST00314",
+    "name": "SATPASPUR 5",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 315,
+    "kode": "ST00315",
+    "name": "SATPASPUR 6",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 148,
+    "kode": "LB00148",
+    "name": "SEDAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 199,
+    "kode": "LB00199",
+    "name": "SEDAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 88,
+    "kode": "LB00088",
+    "name": "SEKARAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 310,
+    "kode": "LB00310",
+    "name": "SEKARAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 92,
+    "kode": "LB00092",
+    "name": "SENDANGHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 142,
+    "kode": "LB00142",
+    "name": "SIDAYU - GRESIK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 307,
+    "kode": "LB00307",
+    "name": "SIDOMULYO MOJOKERTO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 262,
+    "kode": "LB00262",
+    "name": "SIMO BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 100,
+    "kode": "LB00100",
+    "name": "SITIAJI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 277,
+    "kode": "LB00277",
+    "name": "SLUKE REMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 17,
+    "kode": "LB00017",
+    "name": "SOKO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 328,
+    "kode": "LB00328",
+    "name": "SRAGEN KOTA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 134,
+    "kode": "LB00134",
+    "name": "SRATUREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 21,
+    "kode": "LB00021",
+    "name": "SUGIH WARAS",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 305,
+    "kode": "LB00305",
+    "name": "SUKODONO SRAGEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 238,
+    "kode": "LB00238",
+    "name": "SUKOLILO PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 211,
+    "kode": "LB00211",
+    "name": "SUKORAME",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 224,
+    "kode": "LB00224",
+    "name": "SUKOSEWU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 12,
+    "kode": "LB00012",
+    "name": "SUKOWATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 200,
+    "kode": "LB00200",
+    "name": "SULANG 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 182,
+    "kode": "LB00182",
+    "name": "SULANG REMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 152,
+    "kode": "LB00152",
+    "name": "SULURSARI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 26,
+    "kode": "LB00026",
+    "name": "SUMBERJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 181,
+    "kode": "LB00181",
+    "name": "TAJI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 174,
+    "kode": "LB00174",
+    "name": "TAKERAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 106,
+    "kode": "LB00106",
+    "name": "TAMBAKBOYO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 171,
+    "kode": "LB00171",
+    "name": "TAMBAKROMO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 267,
+    "kode": "LB00267",
+    "name": "TAMBAKROMO PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 280,
+    "kode": "LB00280",
+    "name": "TANON SRAGEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 303,
+    "kode": "LB00303",
+    "name": "TAPEN JOMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 233,
+    "kode": "LB00233",
+    "name": "TAYU PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 168,
+    "kode": "LB00168",
+    "name": "TEMAYANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 271,
+    "kode": "LB00271",
+    "name": "TERAS BOYOLALI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 131,
+    "kode": "LB00131",
+    "name": "TIKUNG - LAMONGAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 9,
+    "kode": "LB00009",
+    "name": "TOBO 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 42,
+    "kode": "LB00042",
+    "name": "TOBO 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 226,
+    "kode": "LB00226",
+    "name": "TODANAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 235,
+    "kode": "JR00235",
+    "name": "TOKO JUARA BANJAREJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 273,
+    "kode": "JR00273",
+    "name": "TOKO JUARA JAMPET",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 275,
+    "kode": "JR00275",
+    "name": "TOKO JUARA KALITIDU",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 276,
+    "kode": "JR00276",
+    "name": "TOKO JUARA KEDUNGADEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 230,
+    "kode": "JR00230",
+    "name": "TOKO JUARA NGASEM",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 240,
+    "kode": "JR00240",
+    "name": "TOKO JUARA TAJI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 248,
+    "kode": "JR00248",
+    "name": "TOKO JUARA TANJUNGHARJO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 219,
+    "kode": "JR00219",
+    "name": "TOKO JUARA TOBO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 180,
+    "kode": "LB00180",
+    "name": "TRUCUK",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 41,
+    "kode": "LB00041",
+    "name": "TUBAN 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 44,
+    "kode": "LB00044",
+    "name": "TUBAN 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 45,
+    "kode": "LB00045",
+    "name": "TUBAN 3",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 53,
+    "kode": "LB00053",
+    "name": "TUBAN 4",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 54,
+    "kode": "LB00054",
+    "name": "TUBAN 5",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 184,
+    "kode": "LB00184",
+    "name": "TUBAN TUNAH",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 194,
+    "kode": "LB00194",
+    "name": "UNDAAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 24,
+    "kode": "LB00024",
+    "name": "UNTUNG SUROPATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 234,
+    "kode": "LB00234",
+    "name": "WALIKUKUN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 70,
+    "kode": "LB00070",
+    "name": "WARUJAYENG 1",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 71,
+    "kode": "LB00071",
+    "name": "WARUJAYENG 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 326,
+    "kode": "LB00326",
+    "name": "WEDI 2",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 269,
+    "kode": "LB00269",
+    "name": "WEDI KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 218,
+    "kode": "LB00218",
+    "name": "WINONG PATI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 252,
+    "kode": "LB00252",
+    "name": "WONOASRI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 261,
+    "kode": "LB00261",
+    "name": "WONOSARI KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  }
+]

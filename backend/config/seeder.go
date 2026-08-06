@@ -1,7 +1,11 @@
 package config
 
 import (
+	"encoding/json"
+	"io"
 	"log"
+	"os"
+	"path/filepath"
 
 	"employee-satisfaction-system/backend/models"
 )
@@ -45,5 +49,45 @@ func SeedDatabase() {
 			DB.Create(&c)
 		}
 		log.Println("✅ Seeded Survey Categories")
+	}
+
+	// 3. Seed Stores from JSON
+	var storeCount int64
+	DB.Model(&models.Store{}).Count(&storeCount)
+	if storeCount == 0 {
+		log.Println("🔄 Seeding Stores from JSON...")
+
+		jsonPath := "data/stores.json"
+		if _, err := os.Stat(jsonPath); os.IsNotExist(err) {
+			jsonPath = filepath.Join("backend", "data", "stores.json")
+		}
+
+		jsonFile, err := os.Open(jsonPath)
+		if err != nil {
+			log.Printf("⚠️ Failed to open stores JSON file: %v\n", err)
+			return
+		}
+		defer jsonFile.Close()
+
+		byteValue, err := io.ReadAll(jsonFile)
+		if err != nil {
+			log.Printf("⚠️ Failed to read stores JSON file: %v\n", err)
+			return
+		}
+
+		var stores []models.Store
+		if err := json.Unmarshal(byteValue, &stores); err != nil {
+			log.Printf("⚠️ Failed to parse stores JSON: %v\n", err)
+			return
+		}
+
+		tx := DB.Begin()
+		if err := tx.Create(&stores).Error; err != nil {
+			tx.Rollback()
+			log.Printf("❌ Failed to seed stores to database: %v\n", err)
+		} else {
+			tx.Commit()
+			log.Printf("✅ Seeded %d stores to database\n", len(stores))
+		}
 	}
 }

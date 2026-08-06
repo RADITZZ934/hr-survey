@@ -579,7 +579,7 @@ const downloadStoreQRCodes = async (survey) => {
     for (const store of stores) {
       const storeId = store.id_store || store.id;
       const storeName = store.name || store.nama_store || 'Unknown Store';
-      const surveyUrl = `${window.location.origin}/survey/identity?survey_id=${survey.id}&store_id=${storeId}`;
+      const surveyUrl = `${window.location.origin}/survey/identity?survey_id=${survey.id}&store_id=${encodeURIComponent(storeName)}`;
       
       const qrBase64 = await QRCode.toDataURL(surveyUrl, {
         width: 180,

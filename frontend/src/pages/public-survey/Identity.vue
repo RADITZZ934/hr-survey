@@ -498,8 +498,12 @@ onMounted(async () => {
         // Pre-fill toko jika store_id sudah ada di URL (embedded dari QR code)
         const storeIdFromUrl = route.query.store_id;
         if (storeIdFromUrl) {
-          const found = stores.value.find(s => String(s.id_store || s.id) === String(storeIdFromUrl));
-          selectedStore.value = found || { id_store: storeIdFromUrl, name: storeIdFromUrl };
+          const decodedStoreId = decodeURIComponent(storeIdFromUrl);
+          const found = stores.value.find(s => 
+            String(s.id_store || s.id) === String(decodedStoreId) ||
+            String(s.name || s.nama_store || '').toLowerCase().trim() === String(decodedStoreId).toLowerCase().trim()
+          );
+          selectedStore.value = found || { id_store: decodedStoreId, name: decodedStoreId };
         }
       }
     } catch (err) {
@@ -535,7 +539,7 @@ const startSurvey = () => {
     sessionStorage.setItem('respondent_province', selectedProvince.value ? selectedProvince.value.name : '');
     sessionStorage.setItem('respondent_regency', selectedRegency.value ? selectedRegency.value.name : '');
     sessionStorage.setItem('respondent_dept', 'EXTERNAL');
-    sessionStorage.setItem('id_store', String(selectedStore.value.id_store || selectedStore.value.id || ''));
+    sessionStorage.setItem('id_store', String(selectedStore.value.name || selectedStore.value.id_store || selectedStore.value.id || ''));
     sessionStorage.setItem('survey_visibility', 'external');
   } else {
     sessionStorage.setItem('respondent_dept', department.value);

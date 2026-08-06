@@ -64,6 +64,7 @@ func AutoMigrate() {
 		&models.ActivityLog{},
 		&models.Alert{},
 		&models.SurveyResponse{},
+		&models.Store{},
 	)
 
 	if err != nil {
