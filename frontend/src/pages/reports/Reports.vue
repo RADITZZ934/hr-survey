@@ -162,6 +162,7 @@
                   <th class="py-4 px-4 text-center w-14 rounded-tl-[1.5rem]">No</th>
                   <th class="py-4 px-5 text-left">Respondent ID</th>
                   <th class="py-4 px-5 text-left w-36">{{ isExternal ? 'Domisili' : 'Departemen' }}</th>
+                  <th v-if="isExternal" class="py-4 px-5 text-left w-44">Store QR</th>
                   <th class="py-4 px-4 text-center w-28">Skor</th>
                   <th class="py-4 px-4 text-center w-36">Score Rating</th>
                   <th class="py-4 px-4 text-center w-40">Completion Status</th>
@@ -213,6 +214,17 @@
                     <span v-else class="text-xs italic text-slate-400">-</span>
                   </td>
 
+                  <!-- Store QR -->
+                  <td v-if="isExternal" class="py-4 px-5 text-left" @click="openDetails(res)">
+                    <span 
+                      v-if="res.department && res.department !== '-' && res.department !== 'EXTERNAL'"
+                      class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100"
+                    >
+                      {{ res.department }}
+                    </span>
+                    <span v-else class="text-xs italic text-slate-400">-</span>
+                  </td>
+
                   <!-- Skor -->
                   <td class="py-4 px-4 text-center font-extrabold text-slate-800" @click="openDetails(res)">
                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs bg-slate-100 text-slate-700 font-bold border border-slate-200/60">
@@ -248,7 +260,7 @@
                   </td>
                 </tr>
                 <tr v-if="filteredRespondents.length === 0">
-                  <td colspan="7" class="py-12 text-center text-slate-400 text-sm italic">
+                  <td :colspan="isExternal ? 9 : 8" class="py-12 text-center text-slate-400 text-sm italic">
                     No respondents found for this survey.
                   </td>
                 </tr>
@@ -299,7 +311,12 @@
             <div>
               <h3 class="text-sm font-bold text-slate-800 tracking-tight">{{ selectedRespondent.name }}</h3>
               <p class="text-[10px] text-slate-400 font-bold mt-0.5">
-                {{ isExternal ? ((selectedRespondent.respondent_regency ? selectedRespondent.respondent_regency + ', ' : '') + selectedRespondent.respondent_province) : (selectedRespondent.department || '-') }}
+                <span class="block">
+                  {{ isExternal ? ((selectedRespondent.respondent_regency ? selectedRespondent.respondent_regency + ', ' : '') + selectedRespondent.respondent_province) : (selectedRespondent.department || '-') }}
+                </span>
+                <span v-if="isExternal && selectedRespondent.department && selectedRespondent.department !== '-' && selectedRespondent.department !== 'EXTERNAL'" class="block mt-0.5 text-emerald-600 font-extrabold">
+                  Store: {{ selectedRespondent.department }}
+                </span>
               </p>
             </div>
           </div>
@@ -668,6 +685,7 @@ const exportToExcel = async () => {
       if (isExternal.value) {
         row['Provinsi'] = res.respondent_province || '-';
         row['Kabupaten / Kota'] = res.respondent_regency || '-';
+        row['Store QR'] = res.department && res.department !== 'EXTERNAL' ? res.department : '-';
       } else {
         row['Departemen'] = res.department || '-';
       }
