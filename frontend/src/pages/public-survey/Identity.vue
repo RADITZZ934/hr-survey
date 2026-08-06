@@ -8,7 +8,14 @@
         </svg>
       </div>
       <h2 class="text-xl font-bold text-slate-800 tracking-tight">Identitas Peserta Survei</h2>
-      <p class="text-xs text-slate-400">Silakan pilih metode pengisian dan lengkapi data Anda untuk memulai survei kepuasan karyawan Laskar Buah.</p>
+      <p class="text-xs text-slate-400">
+        <template v-if="surveyVisibility === 'external'">
+          Silakan lengkapi data Anda untuk memulai survei kepuasan pelanggan Laskar Buah.
+        </template>
+        <template v-else>
+          Silakan pilih metode pengisian dan lengkapi data Anda untuk memulai survei kepuasan karyawan Laskar Buah.
+        </template>
+      </p>
     </div>
 
     <!-- Error Notice Block -->

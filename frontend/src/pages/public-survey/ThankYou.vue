@@ -79,7 +79,12 @@
           Terima kasih atas partisipasinya!
         </h1>
         <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
-          Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas dan kenyamanan kerja di Laskar Buah.
+          <template v-if="surveyVisibility === 'external'">
+            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas pelayanan dan produk di Laskar Buah.
+          </template>
+          <template v-else>
+            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas dan kenyamanan kerja di Laskar Buah.
+          </template>
         </p>
       </div>
 
@@ -96,6 +101,7 @@ import { ref, onMounted } from 'vue';
 const CELEBRATE_CACHE_KEY = 'celebrate_json_cache';
 
 const resultData = ref(null);
+const surveyVisibility = ref(sessionStorage.getItem('survey_visibility') || 'internal');
 const showInitialCelebration = ref(true);
 const clicks = ref([]);
 const celebrateDataUrl = ref(null);
