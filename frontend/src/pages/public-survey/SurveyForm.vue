@@ -3,8 +3,8 @@
     <!-- Form Header & Progress (Sticky Header) -->
     <div class="sticky top-0 bg-white/95 backdrop-blur-md pt-2 pb-4 z-20 border-b border-slate-100 -mx-6 px-6 lg:-mx-8 lg:px-8 space-y-3.5 transition-all">
       <div class="flex justify-between items-center text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
-        <span v-if="surveyVisibility === 'external'">Kuesioner Kepuasan Pelanggan Laskar Buah</span>
-        <span v-else>Kuesioner Kepuasan Karyawan Laskar Buah</span>
+        <span v-if="surveyVisibility === 'external'">Kuesioner Kepuasan Pelanggan {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}</span>
+        <span v-else>Kuesioner Kepuasan Karyawan {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}</span>
         <span v-if="questions.length > 0" class="text-[#4647AE] font-semibold bg-[#4647AE]/10 px-2 py-0.5 rounded-md">Terisi {{ answeredCount }} dari {{ questions.length }} Soal</span>
       </div>
       
@@ -178,6 +178,7 @@ const questions = ref([]);
 const surveyVisibility = ref(sessionStorage.getItem('survey_visibility') || 'internal');
 const loading = ref(true);
 const submitting = ref(false); // Controls submit button loading state
+const isBazzar = ref(false);
 const answers = ref({});
 const hoveredRatings = ref({}); // Maps question ID to active hover score
 const activeCategoryIndex = ref(0);
@@ -269,9 +270,10 @@ const isSubmitDisabled = computed(() => {
 
 onMounted(async () => {
   // Check if URL contains "Bazzar" or "Bazaar"
-  const hasBazzar = window.location.href.toLowerCase().includes('bazzar') || 
-                    window.location.href.toLowerCase().includes('bazaar');
-  if (hasBazzar) {
+  isBazzar.value = window.location.href.toLowerCase().includes('bazzar') || 
+                   window.location.href.toLowerCase().includes('bazaar') ||
+                   sessionStorage.getItem('is_bazzar') === 'true';
+  if (isBazzar.value) {
     sessionStorage.setItem('is_bazzar', 'true');
   }
 

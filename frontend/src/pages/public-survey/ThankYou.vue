@@ -82,10 +82,10 @@
         </h1>
         <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
           <template v-if="surveyVisibility === 'external'">
-            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas pelayanan dan produk di Laskar Buah.
+            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas pelayanan dan produk di {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}.
           </template>
           <template v-else>
-            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas dan kenyamanan kerja di Laskar Buah.
+            Tanggapan dan masukan Anda telah berhasil direkam. Penilaian Anda sangat berharga dalam meningkatkan kualitas dan kenyamanan kerja di {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}.
           </template>
         </p>
       </div>

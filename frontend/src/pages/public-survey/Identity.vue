@@ -10,10 +10,10 @@
       <h2 class="text-xl font-bold text-slate-800 tracking-tight">Identitas Peserta Survei</h2>
       <p class="text-xs text-slate-400">
         <template v-if="surveyVisibility === 'external'">
-          Silakan lengkapi data Anda untuk memulai survei kepuasan pelanggan Laskar Buah.
+          Silakan lengkapi data Anda untuk memulai survei kepuasan pelanggan {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}.
         </template>
         <template v-else>
-          Silakan pilih metode pengisian dan lengkapi data Anda untuk memulai survei kepuasan karyawan Laskar Buah.
+          Silakan pilih metode pengisian dan lengkapi data Anda untuk memulai survei kepuasan karyawan {{ isBazzar ? 'Bazzar' : 'Laskar Buah' }}.
         </template>
       </p>
     </div>
@@ -257,15 +257,17 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getSurveyDetail, getProvinces, getRegencies } from '../../services/survey.service';
 import { inventoryService } from '../../services/inventoryService';
 
 const router = useRouter();
 const route = useRoute();
+const setSurveyTitle = inject('setSurveyTitle', null);
 const selectedMode = ref(null);
 const employeeId = ref('');
+const isBazzar = ref(false);
 const department = ref('');
 const surveyError = ref(''); // '', 'expired', 'not_started', 'inactive', 'not_found'
 
@@ -488,15 +490,19 @@ onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
 
   // Check if URL contains "Bazzar" or "Bazaar"
-  const hasBazzar = window.location.href.toLowerCase().includes('bazzar') || 
-                    window.location.href.toLowerCase().includes('bazaar');
-  sessionStorage.setItem('is_bazzar', hasBazzar ? 'true' : 'false');
+  isBazzar.value = window.location.href.toLowerCase().includes('bazzar') || 
+                   window.location.href.toLowerCase().includes('bazaar');
+  sessionStorage.setItem('is_bazzar', isBazzar.value ? 'true' : 'false');
 
   const surveyId = route.query.survey_id;
   if (surveyId) {
     try {
       const res = await getSurveyDetail(surveyId);
       const survey = res.data;
+      
+      if (setSurveyTitle && survey.title) {
+        setSurveyTitle(survey.title);
+      }
       
       // Perform timeline and status validation
       const now = new Date();
