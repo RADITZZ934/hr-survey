@@ -268,6 +268,13 @@ const isSubmitDisabled = computed(() => {
 });
 
 onMounted(async () => {
+  // Check if URL contains "Bazzar" or "Bazaar"
+  const hasBazzar = window.location.href.toLowerCase().includes('bazzar') || 
+                    window.location.href.toLowerCase().includes('bazaar');
+  if (hasBazzar) {
+    sessionStorage.setItem('is_bazzar', 'true');
+  }
+
   const surveyId = route.query.survey_id || sessionStorage.getItem('survey_id');
   if (surveyId) {
     try {

@@ -486,6 +486,12 @@ const handleClickOutside = (e) => {
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
+
+  // Check if URL contains "Bazzar" or "Bazaar"
+  const hasBazzar = window.location.href.toLowerCase().includes('bazzar') || 
+                    window.location.href.toLowerCase().includes('bazaar');
+  sessionStorage.setItem('is_bazzar', hasBazzar ? 'true' : 'false');
+
   const surveyId = route.query.survey_id;
   if (surveyId) {
     try {

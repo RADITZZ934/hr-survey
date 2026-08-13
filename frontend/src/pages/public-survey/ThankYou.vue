@@ -35,8 +35,10 @@
       
       <!-- App Brand & Logo Header -->
       <div class="flex flex-col items-center justify-center space-y-3">
-        <img src="/laskar-corps.png" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
-        <span class="text-base font-extrabold text-slate-800 tracking-tight">HR SURVEY TOOLS | LASKAR BUAH</span>
+        <img :src="isBazzar ? '/bz-icon.png' : '/laskar-corps.png'" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
+        <span class="text-base font-extrabold text-slate-800 tracking-tight">
+          {{ isBazzar ? 'HR SURVEY TOOLS | BAZZAR' : 'HR SURVEY TOOLS | LASKAR BUAH' }}
+        </span>
       </div>
 
             <!-- Score Result Summary Card -->
@@ -105,6 +107,7 @@ const surveyVisibility = ref(sessionStorage.getItem('survey_visibility') || 'int
 const showInitialCelebration = ref(true);
 const clicks = ref([]);
 const celebrateDataUrl = ref(null);
+const isBazzar = ref(false);
 
 // Create a Blob URL from raw JSON text for lottie-player
 const createBlobUrl = (jsonText) => {
@@ -151,6 +154,14 @@ const handlePageClick = (e) => {
 };
 
 onMounted(async () => {
+  // Determine if survey is for Bazzar banner
+  isBazzar.value = window.location.href.toLowerCase().includes('bazzar') || 
+                   window.location.href.toLowerCase().includes('bazaar') || 
+                   sessionStorage.getItem('is_bazzar') === 'true';
+
+  // Clean up sessionStorage
+  sessionStorage.removeItem('is_bazzar');
+
   // Load celebrate animation from cache or network
   await loadCelebrateAnimation();
 
