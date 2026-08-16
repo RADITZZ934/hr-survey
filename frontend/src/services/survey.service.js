@@ -7,6 +7,7 @@ export const getSurveyQuestions = (id) => api.get(`/surveys/${id}/questions`);
 export const getSurveyDetail = (id) => api.get(`/surveys/${id}`);
 export const submitSurveyResponse = (id, data) => api.post(`/surveys/${id}/responses`, data);
 export const deleteSurvey = (id) => api.delete(`/surveys/${id}`);
+export const deleteSurveyResponse = (responseId) => api.delete(`/admin/responses/${responseId}`);
 
 // Regions
 export const getProvinces = () => api.get('/regions/provinces');

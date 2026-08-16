@@ -188,3 +188,56 @@ func CreateResponse(c *gin.Context) {
 		},
 	})
 }
+
+func DeleteResponse(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid response ID"})
+		return
+	}
+
+	tx := config.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	var resp models.Response
+	if err := tx.First(&resp, id).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusNotFound, gin.H{"error": "Response not found"})
+		return
+	}
+
+	// 1. Delete matching response answers
+	if err := tx.Where("response_id = ?", resp.ID).Delete(&models.ResponseAnswer{}).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete response answers"})
+		return
+	}
+
+	// 2. Delete matching survey response summaries (if external/public survey)
+	if resp.RespondentID != "" {
+		tx.Where("survey_id = ? AND nama_responden = ? AND id_store = ?", resp.SurveyID, resp.RespondentID, resp.RespondentDept).Delete(&models.SurveyResponse{})
+	}
+
+	// 3. Delete the response itself
+	if err := tx.Delete(&resp).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete response"})
+		return
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "Response and corresponding answers deleted successfully",
+	})
+}
+

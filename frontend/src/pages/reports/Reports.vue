@@ -251,12 +251,21 @@
 
                   <!-- Actions -->
                   <td class="py-4 px-5 text-center">
-                    <button 
-                      @click="openDetails(res)" 
-                      class="px-3 py-1.5 border border-slate-200 text-xs font-semibold text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 active:bg-blue-50 rounded-xl transition-all whitespace-nowrap"
-                    >
-                      View Details
-                    </button>
+                    <div class="flex items-center justify-center space-x-2">
+                      <button 
+                        @click="openDetails(res)" 
+                        class="px-3 py-1.5 border border-slate-200 text-xs font-semibold text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50/50 active:bg-blue-50 rounded-xl transition-all whitespace-nowrap"
+                      >
+                        View Details
+                      </button>
+                      <button 
+                        v-if="isSuperadmin"
+                        @click.stop="handleDeleteRespondent(res.id)" 
+                        class="px-3 py-1.5 border border-rose-200 text-xs font-semibold text-rose-600 hover:text-white hover:bg-rose-600 active:bg-rose-700 rounded-xl transition-all whitespace-nowrap cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
                 <tr v-if="filteredRespondents.length === 0">
@@ -397,9 +406,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
-import { getSurveys, getSurveyReport, getSurveyResponses } from '../../services/survey.service';
+import { getSurveys, getSurveyReport, getSurveyResponses, deleteSurveyResponse } from '../../services/survey.service';
 import { useSearchStore } from '../../stores/search';
 import * as XLSX from 'xlsx';
 import { Chart, registerables } from 'chart.js';
@@ -407,6 +416,12 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 const router = useRouter();
+
+const isSuperadmin = ref(localStorage.getItem('role_mode') === 'superadmin');
+
+const updateRoleMode = () => {
+  isSuperadmin.value = localStorage.getItem('role_mode') === 'superadmin';
+};
 
 const surveys = ref([]);
 const selectedSurveyId = ref(null);
@@ -800,8 +815,34 @@ const sendToActionPlan = (qa) => {
   router.push('/dashboard/action-plans');
 };
 
+const handleDeleteRespondent = async (responseId) => {
+  const confirmed = confirm('Apakah Anda yakin ingin menghapus data responden ini beserta semua jawabannya? Tindakan ini tidak dapat dibatalkan.');
+  if (!confirmed) return;
+
+  try {
+    const res = await deleteSurveyResponse(responseId);
+    if (res.data && res.data.status === 'success') {
+      alert('Data responden berhasil dihapus.');
+      if (selectedRespondent.value && selectedRespondent.value.id === responseId) {
+        selectedRespondent.value = null;
+      }
+      fetchReportDetails();
+    } else {
+      alert('Gagal menghapus data.');
+    }
+  } catch (err) {
+    console.error('Failed to delete respondent:', err);
+    alert('Gagal menghapus data. Silakan coba kembali.');
+  }
+};
+
 onMounted(() => {
   fetchInitialData();
+  window.addEventListener('role-mode-changed', updateRoleMode);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('role-mode-changed', updateRoleMode);
 });
 </script>
 

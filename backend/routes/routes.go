@@ -59,6 +59,7 @@ func RegisterRoutes(r *gin.Engine) {
 		api.PUT("/admin/employees/:id", controllers.UpdateEmployee)
 		api.DELETE("/admin/employees/:id", controllers.DeleteEmployee)
 		api.GET("/admin/departments/satisfaction", controllers.GetDepartmentSatisfaction)
+		api.DELETE("/admin/responses/:id", controllers.DeleteResponse)
 
 		// Critical Alerts
 		api.GET("/admin/alerts", controllers.GetCriticalAlerts)

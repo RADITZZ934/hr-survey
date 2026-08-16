@@ -198,7 +198,7 @@
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
                   LB
                 </div>
-                <span class="text-xs font-bold text-white hidden md:inline-block">Admin</span>
+                <span class="text-xs font-bold text-white hidden md:inline-block">{{ isSuperadmin ? 'Superadmin' : 'Admin' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -214,7 +214,7 @@
               >
                 <!-- User Profile Summary -->
                 <div class="px-4 py-3 border-b border-slate-100">
-                  <p class="text-xs font-bold text-slate-800">HR Admin Laskar Buah</p>
+                  <p class="text-xs font-bold text-slate-800">{{ isSuperadmin ? 'HR Superadmin Laskar Buah' : 'HR Admin Laskar Buah' }}</p>
                   <p class="text-[11px] text-slate-500 mt-0.5">hradmin@laskarbuah.com</p>
                 </div>
 
@@ -230,6 +230,21 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                     </svg>
                     <span>{{ isBackingUp ? 'Downloading Backup...' : 'Backup Database' }}</span>
+                  </button>
+
+                  <!-- Switch to Superadmin / Exit Superadmin Button -->
+                  <button 
+                    @click="toggleSuperadminMode" 
+                    class="w-full flex items-center space-x-2 px-3 py-2 text-xs font-semibold rounded-xl transition-all"
+                    :class="isSuperadmin ? 'text-rose-600 hover:bg-rose-50' : 'text-slate-700 hover:bg-indigo-50 hover:text-indigo-900'"
+                  >
+                    <svg v-if="!isSuperadmin" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                    </svg>
+                    <span>{{ isSuperadmin ? 'Exit Superadmin' : 'Switch to Superadmin' }}</span>
                   </button>
 
                   <div class="border-t border-slate-100 my-1"></div>
@@ -272,6 +287,29 @@ const router = useRouter();
 const searchStore = useSearchStore();
 const isSettingsOpen = ref(false);
 const isBackingUp = ref(false);
+
+const isSuperadmin = ref(localStorage.getItem('role_mode') === 'superadmin');
+
+const toggleSuperadminMode = () => {
+  if (isSuperadmin.value) {
+    localStorage.removeItem('role_mode');
+    isSuperadmin.value = false;
+    isSettingsOpen.value = false;
+    window.dispatchEvent(new Event('role-mode-changed'));
+  } else {
+    const passkey = prompt('Masukkan Passkey untuk masuk ke Mode Superadmin:');
+    if (passkey === null) return;
+    if (passkey === 'Bina57') {
+      localStorage.setItem('role_mode', 'superadmin');
+      isSuperadmin.value = true;
+      isSettingsOpen.value = false;
+      window.dispatchEvent(new Event('role-mode-changed'));
+      alert('Berhasil masuk ke Mode Superadmin!');
+    } else {
+      alert('Passkey salah!');
+    }
+  }
+};
 
 // Alert Notification Center States
 const isAlertsOpen = ref(false);
