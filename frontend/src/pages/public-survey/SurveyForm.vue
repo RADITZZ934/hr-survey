@@ -392,7 +392,6 @@ const submitSurvey = async () => {
     sessionStorage.removeItem('respondent_province');
     sessionStorage.removeItem('respondent_regency');
     sessionStorage.removeItem('survey_id');
-    sessionStorage.removeItem('survey_visibility');
     sessionStorage.removeItem('id_store');
     
     router.push('/survey/thanks');
