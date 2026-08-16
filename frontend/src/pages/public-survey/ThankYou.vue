@@ -171,10 +171,6 @@ onMounted(async () => {
     document.title = isBazzar.value ? 'HR SURVEY TOOLS | BAZZAR' : 'HR SURVEY TOOLS | LASKAR BUAH';
   }
 
-  // Clean up sessionStorage
-  sessionStorage.removeItem('is_bazzar');
-  sessionStorage.removeItem('survey_visibility');
-
   // Load celebrate animation from cache or network
   await loadCelebrateAnimation();
 
