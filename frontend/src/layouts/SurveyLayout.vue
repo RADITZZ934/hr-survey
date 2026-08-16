@@ -14,6 +14,7 @@ const fetchSurveyTitle = async (surveyId) => {
     if (res.data && res.data.title) {
       surveyTitle.value = res.data.title;
       sessionStorage.setItem('survey_title', res.data.title);
+      document.title = res.data.title;
     }
   } catch (err) {
     console.error('Failed to fetch survey details in layout:', err);
@@ -23,6 +24,7 @@ const fetchSurveyTitle = async (surveyId) => {
 provide('setSurveyTitle', (title) => {
   surveyTitle.value = title;
   sessionStorage.setItem('survey_title', title);
+  document.title = title;
 });
 
 onMounted(() => {
@@ -33,6 +35,11 @@ onMounted(() => {
   const surveyId = route.query.survey_id || sessionStorage.getItem('survey_id');
   if (surveyId) {
     fetchSurveyTitle(surveyId);
+  } else {
+    const cachedTitle = sessionStorage.getItem('survey_title');
+    if (cachedTitle) {
+      document.title = cachedTitle;
+    }
   }
 });
 

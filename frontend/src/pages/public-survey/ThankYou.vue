@@ -37,7 +37,11 @@
       <div class="flex flex-col items-center justify-center space-y-3">
         <img :src="isBazzar ? '/bz-icon.png' : '/laskar-corps.png'" class="h-24 w-auto object-contain" alt="HR Survey Icon" />
         <span class="text-base font-extrabold text-slate-800 tracking-tight">
-          {{ isBazzar ? 'HR SURVEY TOOLS | BAZZAR' : 'HR SURVEY TOOLS | LASKAR BUAH' }}
+          {{ 
+            surveyVisibility === 'external' 
+              ? (isBazzar ? 'LAYANAN KEPUASAN CUSTOMER | BAZZAR' : 'LAYANAN KEPUASAN CUSTOMER | LASKAR BUAH') 
+              : (isBazzar ? 'HR SURVEY TOOLS | BAZZAR' : 'HR SURVEY TOOLS | LASKAR BUAH') 
+          }}
         </span>
       </div>
 
@@ -158,6 +162,14 @@ onMounted(async () => {
   isBazzar.value = window.location.href.toLowerCase().includes('bazzar') || 
                    window.location.href.toLowerCase().includes('bazaar') || 
                    sessionStorage.getItem('is_bazzar') === 'true';
+
+  const visibility = sessionStorage.getItem('survey_visibility') || 'internal';
+  surveyVisibility.value = visibility;
+  if (visibility === 'external') {
+    document.title = isBazzar.value ? 'LAYANAN KEPUASAN CUSTOMER | BAZZAR' : 'LAYANAN KEPUASAN CUSTOMER | LASKAR BUAH';
+  } else {
+    document.title = isBazzar.value ? 'HR SURVEY TOOLS | BAZZAR' : 'HR SURVEY TOOLS | LASKAR BUAH';
+  }
 
   // Clean up sessionStorage
   sessionStorage.removeItem('is_bazzar');
