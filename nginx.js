@@ -7,6 +7,11 @@ const outputPath = path.join(__dirname, fileName);
 
 // Isi Konfigurasi Nginx
 const nginxConfig = `# Config dikodekan secara otomatis via nginx.js
+
+# Rate Limiting & Connection Limiting Zones
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=15r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
 server {
     listen 1400;
     server_name _;
@@ -27,6 +32,10 @@ server {
 
     # Backend API Routing (/api/ atau /api)
     location /api {
+        # Apply Rate Limiting & Connection Limiting
+        limit_req zone=api_limit burst=30 nodelay;
+        limit_conn conn_limit 15;
+
         proxy_pass http://127.0.0.1:1402;
     }
 

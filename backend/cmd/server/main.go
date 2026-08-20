@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"employee-satisfaction-system/backend/config"
+	"employee-satisfaction-system/backend/middleware"
 	"employee-satisfaction-system/backend/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +22,9 @@ func main() {
 
 	// Initialize Gin router
 	r := gin.Default()
+
+	// Use Rate Limiting Middleware
+	r.Use(middleware.RateLimit())
 
 	// Setup CORS middleware
 	r.Use(func(c *gin.Context) {
