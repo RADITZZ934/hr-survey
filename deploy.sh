@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Configuration - sesuaikan path sesuai kebutuhan server
-APP_DIR="/root/hrd"
+APP_DIR="/runner-survey"
 BACKEND_TARGET_DIR="$APP_DIR/backend"
-FRONTEND_TARGET_DIR="/var/www/hr-survey" # Path frontend
+FRONTEND_TARGET_DIR="$APP_DIR/frontend" # Path frontend
 BACKUP_DIR="$APP_DIR/backups"
 LOG_DIR="$APP_DIR/logs"
 
 # PM2 App Names & Ports
 FRONTEND_APP_NAME="hr-survey-frontend"
 BACKEND_APP_NAME="hr-survey-backend"
-PORT_FRONTEND=1401
-PORT_BACKEND=1402
+PORT_FRONTEND=10000
+PORT_BACKEND=10001
 
 # Print with styling
 log_info() {
@@ -86,7 +86,7 @@ if [ -d "$APP_DIR/tmp_extract/backend" ]; then
   cd "$BACKEND_TARGET_DIR" || exit 1
   
   # Jalankan/Start kembali binary Go via PM2
-  PORT=$PORT_BACKEND pm2 start ./hrd-backend --name "$BACKEND_APP_NAME" --update-env 2>/dev/null || \
+  PORT=$PORT_BACKEND pm2 start ./backend --name "$BACKEND_APP_NAME" --update-env 2>/dev/null || \
   PORT=$PORT_BACKEND pm2 restart "$BACKEND_APP_NAME" --update-env
   
   log_success "Backend deployed and running on port $PORT_BACKEND"
