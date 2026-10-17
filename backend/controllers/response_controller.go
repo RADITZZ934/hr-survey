@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"employee-satisfaction-system/backend/config"
@@ -20,6 +21,7 @@ type AnswerInput struct {
 
 type CreateResponseInput struct {
 	RespondentID       string        `json:"respondent_id"`
+	RespondentEmail    string        `json:"respondent_email"`
 	RespondentDept     string        `json:"respondent_dept"`
 	RespondentProvince string        `json:"respondent_province"`
 	RespondentRegency  string        `json:"respondent_regency"`
@@ -84,14 +86,47 @@ func CreateResponse(c *gin.Context) {
 		}
 	}
 
+	// Tracking & Audit Trail for Fraud Detection (Anak Toko / Duplicates)
+	clientIP := c.ClientIP()
+	userAgent := c.Request.UserAgent()
+	isFlagged := false
+	flagReason := ""
+	cleanEmail := strings.ToLower(strings.TrimSpace(input.RespondentEmail))
+
+	if cleanEmail != "" {
+		if strings.HasSuffix(cleanEmail, "@laskarbuah.com") ||
+			strings.HasSuffix(cleanEmail, "@bazzar.com") ||
+			strings.HasSuffix(cleanEmail, "@holding.com") {
+			isFlagged = true
+			flagReason = "Internal Staff Email"
+		} else {
+			// Check if duplicate submission within 7 days for the same store
+			var existingCount int64
+			sevenDaysAgo := time.Now().AddDate(0, 0, -7)
+			config.DB.Model(&models.Response{}).
+				Where("respondent_email = ? AND respondent_dept = ? AND submitted_at >= ?", cleanEmail, respondentDept, sevenDaysAgo).
+				Count(&existingCount)
+
+			if existingCount > 0 {
+				isFlagged = true
+				flagReason = "Duplicate Submission within 7 days"
+			}
+		}
+	}
+
 	// 1. Create Response
 	response := models.Response{
 		SurveyID:           uint(surveyID),
 		UserID:             userID,
 		RespondentID:       input.RespondentID,
+		RespondentEmail:    cleanEmail,
 		RespondentDept:     respondentDept,
 		RespondentProvince: input.RespondentProvince,
 		RespondentRegency:  input.RespondentRegency,
+		IPAddress:          clientIP,
+		UserAgent:          userAgent,
+		IsFlagged:          isFlagged,
+		FlagReason:         flagReason,
 		SubmittedAt:        time.Now(),
 	}
 

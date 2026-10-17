@@ -61,16 +61,65 @@
         </div>
       </div>
 
-      <!-- Name Input (Hidden until Identity selected) -->
-      <div v-if="selectedMode === 'identity'" class="space-y-1.5 animate-fade-in">
-        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
-        <input 
-          v-model="employeeId"
-          type="text" 
-          placeholder="Contoh: Budi Santoso"
-          required
-          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#4647AE] transition-colors"
-        />
+      <!-- Google Verified User Profile Badge -->
+      <div v-if="googleUser" class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between shadow-xs animate-fade-in">
+        <div class="flex items-center space-x-3 overflow-hidden">
+          <img 
+            v-if="googleUser.picture" 
+            :src="googleUser.picture" 
+            alt="Google Avatar" 
+            referrerpolicy="no-referrer"
+            class="w-11 h-11 rounded-full border-2 border-white shadow-xs object-cover shrink-0" 
+          />
+          <div v-else class="w-11 h-11 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+            {{ (googleUser.name || 'G')[0] }}
+          </div>
+          <div class="space-y-0.5 truncate">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-sm font-bold text-slate-800 truncate">{{ googleUser.name }}</span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
+                <svg class="w-2.5 h-2.5 mr-0.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                Google Verified
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 font-medium truncate">{{ googleUser.email }}</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          @click="resetGoogleAuth" 
+          class="text-xs text-slate-400 hover:text-rose-500 p-2 transition-colors shrink-0"
+          title="Ganti Akun Google"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Manual Input & Google Sign-In Fallback Button -->
+      <div v-else-if="selectedMode === 'identity'" class="space-y-3 animate-fade-in">
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
+          <input 
+            v-model="employeeId"
+            type="text" 
+            placeholder="Contoh: Budi Santoso"
+            required
+            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#4647AE] transition-colors"
+          />
+        </div>
+
+        <!-- Google One Tap / Button Container -->
+        <div v-if="googleClientId" class="pt-1 space-y-2">
+          <div class="relative flex items-center justify-center py-1">
+            <div class="border-t border-slate-200 w-full"></div>
+            <span class="bg-white px-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">atau lebih cepat</span>
+          </div>
+          <div ref="googleBtnRef" class="w-full flex justify-center min-h-[40px]"></div>
+        </div>
       </div>
 
       <!-- Anonymous Notice (Shown only when Anonymous selected) -->
@@ -271,6 +320,91 @@ const isBazzar = ref(false);
 const department = ref('');
 const surveyError = ref(''); // '', 'expired', 'not_started', 'inactive', 'not_found'
 
+// Google One Tap & Sign-In State
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+const googleUser = ref(null);
+const googleBtnRef = ref(null);
+
+// Safely decode Google JWT token (UTF-8 safe)
+const parseJwt = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Failed to parse Google JWT token:', e);
+    return null;
+  }
+};
+
+const handleCredentialResponse = (response) => {
+  if (!response?.credential) return;
+  const payload = parseJwt(response.credential);
+  if (payload) {
+    googleUser.value = {
+      name: payload.name || '',
+      email: payload.email || '',
+      picture: payload.picture || '',
+      sub: payload.sub || ''
+    };
+    employeeId.value = payload.name || '';
+    sessionStorage.setItem('respondent_email', payload.email || '');
+    sessionStorage.setItem('respondent_id', payload.name || '');
+  }
+};
+
+const resetGoogleAuth = () => {
+  googleUser.value = null;
+  sessionStorage.removeItem('respondent_email');
+  employeeId.value = '';
+  if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+    window.google.accounts.id.disableAutoSelect();
+  }
+  nextTick(() => {
+    initGoogleAuth();
+  });
+};
+
+const initGoogleAuth = () => {
+  if (!googleClientId) return;
+  if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+    try {
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: handleCredentialResponse,
+        auto_select: true,
+        cancel_on_tap_outside: false
+      });
+
+      // Show Google One Tap popup prompt
+      window.google.accounts.id.prompt();
+
+      // Render standard fallback button if element ref is mounted
+      nextTick(() => {
+        if (googleBtnRef.value && !googleUser.value) {
+          window.google.accounts.id.renderButton(googleBtnRef.value, {
+            theme: 'outline',
+            size: 'large',
+            shape: 'pill',
+            width: 300,
+            text: 'continue_with',
+            logo_alignment: 'left'
+          });
+        }
+      });
+    } catch (err) {
+      console.warn('Google One Tap init error:', err);
+    }
+  }
+};
+
 const surveyVisibility = ref('internal');
 const provinces = ref([]);
 const regencies = ref([]);
@@ -464,6 +598,14 @@ watch(department, (newVal) => {
   deptSearch.value = newVal || '';
 }, { immediate: true });
 
+watch(selectedMode, (newMode) => {
+  if (newMode === 'identity') {
+    nextTick(() => {
+      initGoogleAuth();
+    });
+  }
+});
+
 // Close dropdown on outside click
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
@@ -488,6 +630,35 @@ const handleClickOutside = (e) => {
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
+
+  // Restore previously verified Google user if in session
+  const savedEmail = sessionStorage.getItem('respondent_email');
+  const savedId = sessionStorage.getItem('respondent_id');
+  if (savedEmail && savedId && savedId !== 'ANONYMOUS') {
+    googleUser.value = {
+      name: savedId,
+      email: savedEmail,
+      picture: '',
+      sub: ''
+    };
+    employeeId.value = savedId;
+  }
+
+  // Initialize Google One Tap / Sign-In Button
+  if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+    initGoogleAuth();
+  } else {
+    let checkCount = 0;
+    const interval = setInterval(() => {
+      checkCount++;
+      if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+        clearInterval(interval);
+        initGoogleAuth();
+      } else if (checkCount > 10) {
+        clearInterval(interval);
+      }
+    }, 300);
+  }
 
   // Check if URL contains "Bazzar" or "Bazaar"
   isBazzar.value = window.location.href.toLowerCase().includes('bazzar') || 
@@ -556,15 +727,16 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 const startSurvey = () => {
   const isAnon = selectedMode.value === 'anonymous';
 
-  // Use 'ANONYMOUS' or the provided employee ID
+  // Use 'ANONYMOUS' or the provided employee ID / Google user name
   const finalId = isAnon 
     ? 'ANONYMOUS'
-    : employeeId.value;
+    : (googleUser.value?.name || employeeId.value);
 
   const surveyId = route.query.survey_id || '';
 
   // Save credentials/identity to session storage for the survey form step
   sessionStorage.setItem('respondent_id', finalId);
+  sessionStorage.setItem('respondent_email', isAnon ? '' : (googleUser.value?.email || ''));
   sessionStorage.setItem('survey_id', surveyId);
 
   if (surveyVisibility.value === 'external') {

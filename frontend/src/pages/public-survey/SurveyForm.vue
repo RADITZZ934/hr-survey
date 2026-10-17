@@ -345,8 +345,11 @@ const submitSurvey = async () => {
       }
     });
 
+    const respondentEmail = sessionStorage.getItem('respondent_email') || '';
+
     const payload = {
       respondent_id: sessionStorage.getItem('respondent_id') || 'ANONYMOUS',
+      respondent_email: respondentEmail,
       respondent_dept: sessionStorage.getItem('respondent_dept') || 'ANONYMOUS',
       respondent_province: sessionStorage.getItem('respondent_province') || '',
       respondent_regency: sessionStorage.getItem('respondent_regency') || '',
@@ -378,6 +381,7 @@ const submitSurvey = async () => {
           survey_id: Number(surveyId),
           id_store: sessionStorage.getItem('id_store') || '',
           nama_responden: sessionStorage.getItem('respondent_id') || 'ANONYMOUS',
+          email_responden: respondentEmail,
           penilaian,
         });
       } catch (err) {

@@ -23,6 +23,14 @@ Desktop.ini
 # Env
 .env
 backend/.env
+frontend/.env
+frontend/.env.*.local
+client_secret*.json
+*.secret.json
 
 # Node / Frontend
 node_modules/
+dist/
+
+# External repos
+survey-management-system/
