@@ -321,7 +321,7 @@ const department = ref('');
 const surveyError = ref(''); // '', 'expired', 'not_started', 'inactive', 'not_found'
 
 // Google One Tap & Sign-In State
-const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '159830778233-pua93q2q7208sd2j6f2t7g7gjqclgsj0.apps.googleusercontent.com';
 const googleUser = ref(null);
 const googleBtnRef = ref(null);
 

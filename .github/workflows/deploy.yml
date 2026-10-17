@@ -28,6 +28,8 @@ jobs:
       - name: Build Frontend
         run: npm run build
         working-directory: frontend
+        env:
+          VITE_GOOGLE_CLIENT_ID: 159830778233-pua93q2q7208sd2j6f2t7g7gjqclgsj0.apps.googleusercontent.com
 
       # Setup Go cache and build backend
       - name: Set up Go
