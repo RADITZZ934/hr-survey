@@ -61,8 +61,44 @@
         </div>
       </div>
 
-      <!-- Google Verified User Profile Badge -->
-      <div v-if="googleUser" class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between shadow-xs animate-fade-in">
+      <!-- STEP 1 (EXTERNAL SURVEY): Google Sign-In Gate (First Thing that Appears) -->
+      <div v-if="surveyVisibility === 'external' && !googleUser && !isManualMode" class="space-y-4 animate-fade-in">
+        <div class="bg-gradient-to-b from-indigo-50/70 to-slate-50 border border-indigo-100/80 rounded-2xl p-6 text-center space-y-4 shadow-xs">
+          <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center shadow-xs border border-slate-100">
+            <svg class="w-6 h-6" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+          </div>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-base">Masuk dengan Akun Google</h3>
+            <p class="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
+              Silakan lanjutkan dengan akun Google Anda untuk mengisi survei kepuasan pelanggan secara instan.
+            </p>
+          </div>
+
+          <!-- Prominent Google Button -->
+          <div class="pt-2 flex justify-center w-full min-h-[46px]">
+            <div ref="googleBtnRef" class="flex justify-center w-full"></div>
+          </div>
+        </div>
+
+        <!-- Optional Manual Mode Toggle -->
+        <div class="text-center pt-1">
+          <button 
+            type="button" 
+            @click="isManualMode = true"
+            class="text-xs text-slate-400 hover:text-slate-600 underline transition-colors"
+          >
+            Atau isi identitas secara manual
+          </button>
+        </div>
+      </div>
+
+      <!-- Google Verified User Profile Badge (Shown when Google is verified) -->
+      <div v-else-if="googleUser" class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between shadow-xs animate-fade-in">
         <div class="flex items-center space-x-3 overflow-hidden">
           <img 
             v-if="googleUser.picture" 
@@ -99,21 +135,29 @@
         </button>
       </div>
 
-      <!-- Manual Input & Google Sign-In Fallback Button -->
-      <div v-else-if="selectedMode === 'identity'" class="space-y-3 animate-fade-in">
-        <div class="space-y-1.5">
+      <!-- Manual Input (Shown if manual mode enabled or in internal survey) -->
+      <div v-else-if="isManualMode || (surveyVisibility === 'internal' && selectedMode === 'identity')" class="space-y-3 animate-fade-in">
+        <div class="flex items-center justify-between">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
-          <input 
-            v-model="employeeId"
-            type="text" 
-            placeholder="Contoh: Budi Santoso"
-            required
-            class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#4647AE] transition-colors"
-          />
+          <button 
+            v-if="surveyVisibility === 'external' && isManualMode" 
+            type="button" 
+            @click="isManualMode = false"
+            class="text-xs font-semibold text-[#4647AE] hover:underline"
+          >
+            ← Gunakan Akun Google
+          </button>
         </div>
+        <input 
+          v-model="employeeId"
+          type="text" 
+          placeholder="Contoh: Budi Santoso"
+          required
+          class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#4647AE] transition-colors"
+        />
 
-        <!-- Google One Tap / Button Container -->
-        <div v-if="googleClientId" class="pt-1 space-y-2">
+        <!-- Google button fallback for internal survey -->
+        <div v-if="surveyVisibility === 'internal' && googleClientId" class="pt-1 space-y-2">
           <div class="relative flex items-center justify-center py-1">
             <div class="border-t border-slate-200 w-full"></div>
             <span class="bg-white px-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">atau lebih cepat</span>
@@ -127,8 +171,8 @@
         <strong>Pemberitahuan:</strong> Identitas dan nama Anda tidak akan dicatat. Survei ini akan dikirimkan secara anonim untuk menjaga privasi Anda.
       </div>
 
-      <!-- Domicile Selection (Shown when survey is external) -->
-      <div v-if="surveyVisibility === 'external' && selectedMode === 'identity'" class="space-y-4 animate-fade-in relative z-20">
+      <!-- Domicile Selection (Shown when survey is external and user is verified or manual) -->
+      <div v-if="surveyVisibility === 'external' && (googleUser || isManualMode)" class="space-y-4 animate-fade-in relative z-20">
         <!-- Province Dropdown -->
         <div class="space-y-1.5 relative z-20" ref="provinceRef">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Provinsi</label>
@@ -289,8 +333,8 @@
         </div>
       </div>
 
-      <!-- Submit Button (Hidden until a mode is selected) -->
-      <div v-if="selectedMode" class="pt-4 animate-fade-in relative z-10">
+      <!-- Submit Button (Hidden on external survey until Google sign in or manual mode) -->
+      <div v-if="selectedMode && (surveyVisibility !== 'external' || googleUser || isManualMode)" class="pt-4 animate-fade-in relative z-10">
         <button 
           type="submit"
           class="w-full bg-[#4647AE] hover:bg-[#383994] active:bg-[#2e2e7a] text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-sm shadow-indigo-200 flex items-center justify-center space-x-2"
@@ -324,6 +368,7 @@ const surveyError = ref(''); // '', 'expired', 'not_started', 'inactive', 'not_f
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '159830778233-pua93q2q7208sd2j6f2t7g7gjqclgsj0.apps.googleusercontent.com';
 const googleUser = ref(null);
 const googleBtnRef = ref(null);
+const isManualMode = ref(false);
 
 // Safely decode Google JWT token (UTF-8 safe)
 const parseJwt = (token) => {
@@ -360,10 +405,34 @@ const handleCredentialResponse = (response) => {
   }
 };
 
+const renderGoogleButton = () => {
+  if (!googleClientId || typeof window === 'undefined') return;
+  if (!window.google?.accounts?.id) return;
+
+  nextTick(() => {
+    if (googleBtnRef.value && !googleUser.value) {
+      googleBtnRef.value.innerHTML = '';
+      try {
+        window.google.accounts.id.renderButton(googleBtnRef.value, {
+          theme: 'outline',
+          size: 'large',
+          shape: 'pill',
+          width: 320,
+          text: 'continue_with',
+          logo_alignment: 'left'
+        });
+      } catch (e) {
+        console.warn('Google renderButton error:', e);
+      }
+    }
+  });
+};
+
 const resetGoogleAuth = () => {
   googleUser.value = null;
   sessionStorage.removeItem('respondent_email');
   employeeId.value = '';
+  isManualMode.value = false;
   if (typeof window !== 'undefined' && window.google?.accounts?.id) {
     window.google.accounts.id.disableAutoSelect();
   }
@@ -386,19 +455,8 @@ const initGoogleAuth = () => {
       // Show Google One Tap popup prompt
       window.google.accounts.id.prompt();
 
-      // Render standard fallback button if element ref is mounted
-      nextTick(() => {
-        if (googleBtnRef.value && !googleUser.value) {
-          window.google.accounts.id.renderButton(googleBtnRef.value, {
-            theme: 'outline',
-            size: 'large',
-            shape: 'pill',
-            width: 300,
-            text: 'continue_with',
-            logo_alignment: 'left'
-          });
-        }
-      });
+      // Render prominent Google button
+      renderGoogleButton();
     } catch (err) {
       console.warn('Google One Tap init error:', err);
     }
@@ -606,6 +664,18 @@ watch(selectedMode, (newMode) => {
   }
 });
 
+watch(googleBtnRef, (newRef) => {
+  if (newRef) {
+    renderGoogleButton();
+  }
+});
+
+watch(isManualMode, (val) => {
+  if (!val) {
+    renderGoogleButton();
+  }
+});
+
 // Close dropdown on outside click
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
@@ -712,6 +782,9 @@ onMounted(async () => {
           );
           selectedStore.value = found || { id_store: decodedStoreId, name: decodedStoreId };
         }
+        nextTick(() => {
+          renderGoogleButton();
+        });
       }
     } catch (err) {
       console.error('Failed to fetch survey details:', err);
