@@ -41,6 +41,19 @@ export const storeService = {
       console.error('Error in storeService.getStores:', error);
       throw error;
     }
+  },
+
+  /**
+   * Menyinkronkan daftar toko dari API pusat Laskar Buah dan stores.json
+   */
+  async syncStores() {
+    try {
+      const response = await api.post('/LIT/store/sync');
+      return response.data;
+    } catch (error) {
+      console.error('Error in storeService.syncStores:', error);
+      throw error;
+    }
   }
 };
 

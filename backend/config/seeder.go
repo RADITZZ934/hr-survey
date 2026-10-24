@@ -51,36 +51,35 @@ func SeedDatabase() {
 		log.Println("✅ Seeded Survey Categories")
 	}
 
-	// 3. Seed Stores from JSON
+	// 3. Seed Stores from JSON & Sync Missing Stores
+	jsonPath := "data/stores.json"
+	if _, err := os.Stat(jsonPath); os.IsNotExist(err) {
+		jsonPath = filepath.Join("backend", "data", "stores.json")
+	}
+
+	jsonFile, err := os.Open(jsonPath)
+	if err != nil {
+		log.Printf("⚠️ Failed to open stores JSON file: %v\n", err)
+		return
+	}
+	defer jsonFile.Close()
+
+	byteValue, err := io.ReadAll(jsonFile)
+	if err != nil {
+		log.Printf("⚠️ Failed to read stores JSON file: %v\n", err)
+		return
+	}
+
+	var stores []models.Store
+	if err := json.Unmarshal(byteValue, &stores); err != nil {
+		log.Printf("⚠️ Failed to parse stores JSON: %v\n", err)
+		return
+	}
+
 	var storeCount int64
 	DB.Model(&models.Store{}).Count(&storeCount)
 	if storeCount == 0 {
 		log.Println("🔄 Seeding Stores from JSON...")
-
-		jsonPath := "data/stores.json"
-		if _, err := os.Stat(jsonPath); os.IsNotExist(err) {
-			jsonPath = filepath.Join("backend", "data", "stores.json")
-		}
-
-		jsonFile, err := os.Open(jsonPath)
-		if err != nil {
-			log.Printf("⚠️ Failed to open stores JSON file: %v\n", err)
-			return
-		}
-		defer jsonFile.Close()
-
-		byteValue, err := io.ReadAll(jsonFile)
-		if err != nil {
-			log.Printf("⚠️ Failed to read stores JSON file: %v\n", err)
-			return
-		}
-
-		var stores []models.Store
-		if err := json.Unmarshal(byteValue, &stores); err != nil {
-			log.Printf("⚠️ Failed to parse stores JSON: %v\n", err)
-			return
-		}
-
 		tx := DB.Begin()
 		if err := tx.Create(&stores).Error; err != nil {
 			tx.Rollback()
@@ -88,6 +87,21 @@ func SeedDatabase() {
 		} else {
 			tx.Commit()
 			log.Printf("✅ Seeded %d stores to database\n", len(stores))
+		}
+	} else {
+		// Sync any missing stores from stores.json to database
+		var addedCount int
+		for _, s := range stores {
+			var count int64
+			DB.Model(&models.Store{}).Where("kode = ? OR name = ?", s.Kode, s.Name).Count(&count)
+			if count == 0 {
+				if err := DB.Create(&s).Error; err == nil {
+					addedCount++
+				}
+			}
+		}
+		if addedCount > 0 {
+			log.Printf("✅ Synced and added %d new stores from stores.json to database\n", addedCount)
 		}
 	}
 }

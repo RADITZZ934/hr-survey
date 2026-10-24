@@ -2252,5 +2252,82 @@
     "name": "WONOSARI KLATEN",
     "aplikasi_id": 1,
     "koordinat": ""
+  },
+  {
+    "id": 337,
+    "kode": "LB00337",
+    "name": "NGORO JOMBANG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 338,
+    "kode": "LB00338",
+    "name": "KEPATIHAN PONOROGO",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 339,
+    "kode": "LB00339",
+    "name": "BEJAGUNG TUBAN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 340,
+    "kode": "LB00340",
+    "name": "MANISRENGGO KLATEN",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 341,
+    "kode": "LB00341",
+    "name": "NGUNUT TULUNGAGUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 342,
+    "kode": "LB00342",
+    "name": "BLORA KOTA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 343,
+    "kode": "LB00343",
+    "name": "KARANGASEM BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 344,
+    "kode": "LB00344",
+    "name": "SIDOHARJO WONOGIRI",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 345,
+    "kode": "LB00345",
+    "name": "BANDUNG TULUNGAGUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 346,
+    "kode": "LB00346",
+    "name": "CAMPURDARAT TULUNGAGUNG",
+    "aplikasi_id": 1,
+    "koordinat": ""
+  },
+  {
+    "id": 347,
+    "kode": "LB00347",
+    "name": "TUNJUNGAN BLORA",
+    "aplikasi_id": 1,
+    "koordinat": ""
   }
 ]
