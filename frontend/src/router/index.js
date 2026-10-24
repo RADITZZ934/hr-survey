@@ -24,7 +24,8 @@ const routes = [
       { path: 'surveys', component: () => import('../pages/surveys/SurveyList.vue') },
       { path: 'reports', component: () => import('../pages/reports/Reports.vue') },
       { path: 'action-plans', component: () => import('../pages/action-plans/ActionPlans.vue') },
-      { path: 'employees', component: () => import('../pages/employees/EmployeeManagement.vue') }
+      { path: 'employees', component: () => import('../pages/employees/EmployeeManagement.vue') },
+      { path: 'stores', component: () => import('../pages/stores/StoreList.vue') }
     ]
   },
   {
